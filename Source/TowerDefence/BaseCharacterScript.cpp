@@ -10,15 +10,39 @@ ABaseCharacterScript::ABaseCharacterScript()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+	SpringArm->SetupAttachment(RootComponent);
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm);
+	
 
 }
-
 // Called when the game starts or when spawned
 void ABaseCharacterScript::BeginPlay()
 {
 	Super::BeginPlay();
+	SpawnTransparentTower();
+	//UHUDScript* HudDisplay = CreateWidget<UHUDScript>(GetWorld(),UHUDScript::StaticClass());
 	
 }
+// Called every frame
+void ABaseCharacterScript::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	FVector Loc = GetLineTraceLocation();
+	SpawnedTransparentTower->SetActorLocation(Loc);
+	//TransparentTower->SetActorLocation(Loc);
+	
+}
+
+
+void ABaseCharacterScript::ReturnLocation(FVector Loc)
+{
+	UE_LOG(LogTemp,Warning,TEXT("the location to display is %f %f %f"), Loc.X, Loc.Y, Loc.Z);
+}
+
+
 
 void ABaseCharacterScript::MoveInDirection(const FInputActionValue& Value)
 {
@@ -48,12 +72,85 @@ void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 	}
 }
 
-// Called every frame
-void ABaseCharacterScript::Tick(float DeltaTime)
+FVector ABaseCharacterScript::GetLineTraceLocation()
 {
-	Super::Tick(DeltaTime);
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if(PlayerController)
+	{
+		FVector StartLocation = Camera->GetComponentLocation();
+		FRotator StartRotation = Camera->GetComponentRotation();
+		FVector EndLocation = StartLocation + (StartRotation.Vector() * 1000.0f);
+		FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
+		TraceParams.bTraceComplex = true;
+		TraceParams.bReturnPhysicalMaterial = false;
 
+		// Perform the line trace
+		FHitResult HitResult;
+		bool bHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartLocation,
+			EndLocation,
+			ECC_Visibility,
+			TraceParams
+		);
+		// Draw debug line
+		DrawDebugLine(
+			GetWorld(),
+			StartLocation,
+			EndLocation,
+			FColor::Green,
+			false,
+			1.0f,
+			0,
+			1.0f
+		);
+		if (bHit)
+		{
+			// Output debug information
+			UE_LOG(LogTemp,Warning,TEXT("the location that was hit %f %f %f"), HitResult.Location.X, HitResult.Location.Y, HitResult.Location.Z)
+			return HitResult.Location;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
+		}
+
+		
+
+		
+	}
+	
+	FVector temp = FVector::Zero();
+	return temp;
 }
+
+void ABaseCharacterScript::SpawnTransparentTower()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		// Define the spawn parameters
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		// Define the spawn location and rotation
+		FVector SpawnLocation = FVector(0.0f, 0.0f, 100.0f);
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+
+		// Choose the actor class to spawn
+		//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
+
+		// Spawn the actor
+		AActor* SpawnedActor = World->SpawnActor<AActor>(TransparentTower, SpawnLocation, SpawnRotation, SpawnParams);
+
+		// Check if the actor was successfully spawned
+		if (SpawnedActor)
+		{
+			SpawnedTransparentTower = SpawnedActor;
+			UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
+			// Do something with the spawned actor (optional)
+		}
+	}
+}
+
 
 // Called to bind functionality to input
 void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
