@@ -15,6 +15,7 @@ void ABuildDisplayTowerScript::BeginPlay()
 {
 	Super::BeginPlay();
 	TowerMesh->SetStaticMesh(Mesh1);
+	TowerMesh->SetMaterial(0,CanPlaceMat);
 }
 
 void ABuildDisplayTowerScript::Tick(float DeltaTime)
@@ -33,10 +34,12 @@ void ABuildDisplayTowerScript::SwapMesh()
 	if(TowerMesh->GetStaticMesh() == Mesh1)
 	{
 		TowerMesh->SetStaticMesh(Mesh2);
+		TowerMesh->SetMaterial(0,CanPlaceMat);
 	}
 	else if(TowerMesh->GetStaticMesh() == Mesh2)
 	{
 		TowerMesh->SetStaticMesh(Mesh1);
+		TowerMesh->SetMaterial(0,CanNotPlaceMat);
 	}
 }
 

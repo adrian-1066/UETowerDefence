@@ -8,6 +8,8 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HotBarSlotScript.h"
+#include "Components/HorizontalBox.h"
 #include "HUDScript.generated.h"
 
 /**
@@ -21,7 +23,14 @@ class TOWERDEFENCE_API UHUDScript : public UUserWidget
 
 public:
 
+	
 	virtual void NativeConstruct() override;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets",meta = (BindWidget))
+	UHorizontalBox* HorizontalBoxContainer;
+	
+	UFUNCTION(BlueprintCallable, Category = "Widgets")
+	void AddHotBarSlots(int Count);
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int SelectedHotBarOption;
 	int HotBarSize;
@@ -33,6 +42,21 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")
 	void HighlightOption(int Option, int PreviousHighlight);
 
+	UHUDScript(const FObjectInitializer& ObjectInitializer);
+
+	
+	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TArray<UHotBarSlotScript*> BarSlots;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UHotBarSlotScript> HotBarSlotClass;
+
+	virtual void PostLoad() override;
+
+private:
+	void CreateSlots();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputMappingContext* InputMappingContext;

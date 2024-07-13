@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 
 
+
+
 void UHUDScript::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -28,6 +30,31 @@ void UHUDScript::NativeConstruct()
 	}
 	SelectedHotBarOption = 0;
 	ChangeSelected(0);
+}
+
+void UHUDScript::AddHotBarSlots(int Count)
+{
+	if (!HotBarSlotClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CustomWidget1Class is not set"));
+		return;
+	}
+
+	if (!HorizontalBoxContainer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HorizontalBoxContainer is not bound"));
+		return;
+	}
+
+	for (int32 i = 0; i < Count; ++i)
+	{
+		UHotBarSlotScript* NewWidget = CreateWidget<UHotBarSlotScript>(this, HotBarSlotClass);
+		if (NewWidget)
+		{
+			UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(NewWidget);
+			// Optionally, you can customize the slot properties here
+		}
+	}
 }
 
 void UHUDScript::SetNumOfSlots(int Total)
@@ -52,6 +79,80 @@ void UHUDScript::ChangeSelected(int Direction)
 	SelectedHotBarOption = tempNewSelection;
 
 	
+}
+
+UHUDScript::UHUDScript(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer)
+{
+	if (!HorizontalBoxContainer)
+	{
+		HorizontalBoxContainer = ObjectInitializer.CreateDefaultSubobject<UHorizontalBox>(this, TEXT("HorizontalBoxContainer"));
+	}
+
+	if(HorizontalBoxContainer)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("box has been made"));
+	}
+	CreateSlots();
+	/*if (!IsDesignTime())
+	{
+		// Only create widgets at runtime, not at design time
+		for (int32 i = 0; i < 5; ++i) // Adjust the number of widgets as needed
+			{
+			UHotBarSlotScript* NewWidget = CreateWidget<UHotBarSlotScript>(this, HotBarSlotClass);
+			if (NewWidget)
+			{
+				BarSlots.Add(NewWidget);
+			}
+			}
+	}*/
+}
+
+void UHUDScript::PostLoad()
+{
+	Super::PostLoad();
+	/*if (HorizontalBoxContainer)
+	{
+		for (UHotBarSlotScript* Widget : BarSlots)
+		{
+			if (Widget)
+			{
+				UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(Widget);
+				// Optionally, you can customize the slot properties here
+			}
+		}
+	}*/
+}
+
+void UHUDScript::CreateSlots()
+{
+	if (!HotBarSlotClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HotBarSlotClass is not set"));
+		return;
+	}
+
+	if (!HorizontalBoxContainer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HorizontalBoxContainer is not bound"));
+		return;
+	}
+
+	// Clear existing widgets to prevent duplication
+	HorizontalBoxContainer->ClearChildren();
+
+	// Create and add the widgets
+	BarSlots.Empty();
+	for (int32 i = 0; i < 5; ++i) // Adjust the number of widgets as needed
+		{
+		UHotBarSlotScript* NewWidget = CreateWidget<UHotBarSlotScript>(this, HotBarSlotClass);
+		if (NewWidget)
+		{
+			BarSlots.Add(NewWidget);
+			UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(NewWidget);
+			// Optionally, you can customize the slot properties here
+		}
+		}
 }
 
 FReply UHUDScript::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)

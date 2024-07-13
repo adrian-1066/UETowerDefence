@@ -6,6 +6,7 @@
 #include "TowerBaseScript.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Materials/MaterialInterface.h"
 #include "BuildDisplayTowerScript.generated.h"
 
 /**
@@ -26,7 +27,10 @@ public:
 	UStaticMesh* Mesh1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
 	UStaticMesh* Mesh2;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
+	UMaterialInterface* CanPlaceMat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
+	UMaterialInterface* CanNotPlaceMat;
 	float CurrentTime;
 	float TimeBetweenSwaps;
 };
