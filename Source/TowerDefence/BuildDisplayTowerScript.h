@@ -21,6 +21,7 @@ public:
 	ABuildDisplayTowerScript();
 	virtual void Tick(float DeltaTime) override;
 	void SwapMesh();
+	void SetMesh(UStaticMesh* NewMesh);
 
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")

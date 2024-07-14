@@ -29,12 +29,12 @@ void UHUDScript::NativeConstruct()
 		}
 	}
 	SelectedHotBarOption = 0;
-	ChangeSelected(0);
+	//ChangeSelected(0);
 }
 
 void UHUDScript::AddHotBarSlots(int Count)
 {
-	if (!HotBarSlotClass)
+	/*if (!HotBarSlotClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CustomWidget1Class is not set"));
 		return;
@@ -54,7 +54,7 @@ void UHUDScript::AddHotBarSlots(int Count)
 			UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(NewWidget);
 			// Optionally, you can customize the slot properties here
 		}
-	}
+	}*/
 }
 
 void UHUDScript::SetNumOfSlots(int Total)
@@ -63,7 +63,7 @@ void UHUDScript::SetNumOfSlots(int Total)
 	UE_LOG(LogTemp,Warning,TEXT("the size of the hot bar is %d"),HotBarSize);
 }
 
-void UHUDScript::ChangeSelected(int Direction)
+int UHUDScript::ChangeSelected(int Direction)
 {
 	int tempNewSelection = SelectedHotBarOption + Direction;
 
@@ -77,14 +77,14 @@ void UHUDScript::ChangeSelected(int Direction)
 	}
 	HighlightOption(tempNewSelection, SelectedHotBarOption);
 	SelectedHotBarOption = tempNewSelection;
-
+	return SelectedHotBarOption;
 	
 }
 
 UHUDScript::UHUDScript(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
-	if (!HorizontalBoxContainer)
+	/*if (!HorizontalBoxContainer)
 	{
 		HorizontalBoxContainer = ObjectInitializer.CreateDefaultSubobject<UHorizontalBox>(this, TEXT("HorizontalBoxContainer"));
 	}
@@ -93,7 +93,7 @@ UHUDScript::UHUDScript(const FObjectInitializer& ObjectInitializer)
 	{
 		UE_LOG(LogTemp,Warning,TEXT("box has been made"));
 	}
-	CreateSlots();
+	CreateSlots();*/
 	/*if (!IsDesignTime())
 	{
 		// Only create widgets at runtime, not at design time
@@ -126,7 +126,7 @@ void UHUDScript::PostLoad()
 
 void UHUDScript::CreateSlots()
 {
-	if (!HotBarSlotClass)
+	/*if (!HotBarSlotClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HotBarSlotClass is not set"));
 		return;
@@ -152,7 +152,7 @@ void UHUDScript::CreateSlots()
 			UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(NewWidget);
 			// Optionally, you can customize the slot properties here
 		}
-		}
+		}*/
 }
 
 FReply UHUDScript::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -178,9 +178,9 @@ void UHUDScript::HandleNumKey(const FKey& Key)
 
 void UHUDScript::ScrollHotBar(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("scroll triggered, the value is %f"), Value.Get<float>());
+	UE_LOG(LogTemp, Warning, TEXT("scroll triggered in hud Script, the value is %f"), Value.Get<float>());
 	//int temp = Value.Get<float>();
-	ChangeSelected(Value.Get<float>());
+	//ChangeSelected(Value.Get<float>());
 }
 
 void UHUDScript::MoveDirectToHotBar(const FInputActionValue& Value)

@@ -11,6 +11,9 @@
 #include "Engine/World.h"
 #include "GameFramework/Actor.h" 
 #include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
+#include "HUDScript.h"
+#include "BuildDisplayTowerScript.h"
 #include "BaseCharacterScript.generated.h"
 
 UCLASS()
@@ -37,8 +40,13 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tower Builder")
 	TSubclassOf<AActor> TransparentTower;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tower Builder")
+	TSubclassOf<ABuildDisplayTowerScript> TransTowerClass;
+
 	UPROPERTY()
 	AActor* SpawnedTransparentTower;
+	UPROPERTY()
+	ABuildDisplayTowerScript* TransTower;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")
 	void GetLocation();
@@ -56,13 +64,24 @@ protected:
 	class UInputAction* LookAction;
 	UPROPERTY(EditAnywhere,Category="Enhanced Input")
 	class UInputAction* JumpAction;
+	UPROPERTY(EditAnywhere,Category="Enhanced Input")
+	class UInputAction* ScrollAction;
 
 	virtual void MoveInDirection(const FInputActionValue& Value);
 	virtual void Look(const FInputActionValue& Value);
 	virtual void TriggerJump(const FInputActionValue& Value);
+	virtual void ScrollHotBar(const FInputActionValue& Value);
 
 	FVector GetLineTraceLocation();
 	void SpawnTransparentTower();
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UHUDScript> HUDClass;
+
+	int CurrentHotBarSlotSelected;
+
+private:
+	UPROPERTY()
+	UHUDScript* HUDInstance;
 
 };

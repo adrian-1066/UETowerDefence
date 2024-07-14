@@ -25,8 +25,8 @@ public:
 
 	
 	virtual void NativeConstruct() override;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets",meta = (BindWidget))
-	UHorizontalBox* HorizontalBoxContainer;
+	/*UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets",meta = (BindWidget))
+	UHorizontalBox* HorizontalBoxContainer;*/
 	
 	UFUNCTION(BlueprintCallable, Category = "Widgets")
 	void AddHotBarSlots(int Count);
@@ -37,7 +37,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Stats")
 	void SetNumOfSlots(int Total);
 	
-	void ChangeSelected(int Direction);
+	int ChangeSelected(int Direction);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")
 	void HighlightOption(int Option, int PreviousHighlight);
@@ -47,11 +47,11 @@ public:
 	
 	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TArray<UHotBarSlotScript*> BarSlots;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UHotBarSlotScript> HotBarSlotClass;
+	TSubclassOf<UHotBarSlotScript> HotBarSlotClass;*/
 
 	virtual void PostLoad() override;
 

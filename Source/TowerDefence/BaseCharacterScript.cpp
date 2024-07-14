@@ -5,6 +5,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "UObject/ConstructorHelpers.h"
 // Sets default values
 ABaseCharacterScript::ABaseCharacterScript()
 {
@@ -15,7 +16,7 @@ ABaseCharacterScript::ABaseCharacterScript()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-	
+	CurrentHotBarSlotSelected = 0;
 
 }
 // Called when the game starts or when spawned
@@ -23,6 +24,16 @@ void ABaseCharacterScript::BeginPlay()
 {
 	Super::BeginPlay();
 	SpawnTransparentTower();
+
+	if(HUDClass)
+	{
+		HUDInstance = CreateWidget<UHUDScript>(GetWorld(),HUDClass);
+		if(HUDInstance)
+		{
+			HUDInstance->AddToViewport();
+		}
+	}
+	HUDInstance->ChangeSelected(0);
 	//UHUDScript* HudDisplay = CreateWidget<UHUDScript>(GetWorld(),UHUDScript::StaticClass());
 	
 }
@@ -70,6 +81,12 @@ void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 	{
 		Jump();
 	}
+}
+
+void ABaseCharacterScript::ScrollHotBar(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("scroll triggered in character Script, the value is %f"), Value.Get<float>());
+	CurrentHotBarSlotSelected = HUDInstance->ChangeSelected(Value.Get<float>());
 }
 
 FVector ABaseCharacterScript::GetLineTraceLocation()
@@ -139,11 +156,16 @@ void ABaseCharacterScript::SpawnTransparentTower()
 		//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
 
 		// Spawn the actor
-		AActor* SpawnedActor = World->SpawnActor<AActor>(TransparentTower, SpawnLocation, SpawnRotation, SpawnParams);
+		AActor* SpawnedActor = World->SpawnActor<AActor>(TransTowerClass, SpawnLocation, SpawnRotation, SpawnParams);
 
 		// Check if the actor was successfully spawned
 		if (SpawnedActor)
 		{
+			TransTower = Cast<ABuildDisplayTowerScript>(SpawnedActor);
+			if(TransTower)
+			{
+				UE_LOG(LogTemp,Warning,TEXT("display tower is of type display"))
+			}
 			SpawnedTransparentTower = SpawnedActor;
 			UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
 			// Do something with the spawned actor (optional)
@@ -169,6 +191,7 @@ void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		Input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABaseCharacterScript::MoveInDirection);
 		Input->BindAction(LookAction, ETriggerEvent::Triggered,this,&ABaseCharacterScript::Look);
 		Input->BindAction(JumpAction,ETriggerEvent::Started,this,&ABaseCharacterScript::TriggerJump);
+		Input->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &ABaseCharacterScript::ScrollHotBar);
 	}
 
 }

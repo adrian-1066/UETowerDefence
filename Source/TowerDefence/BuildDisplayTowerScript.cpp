@@ -43,4 +43,9 @@ void ABuildDisplayTowerScript::SwapMesh()
 	}
 }
 
+void ABuildDisplayTowerScript::SetMesh(UStaticMesh* NewMesh)
+{
+	TowerMesh->SetStaticMesh(NewMesh);
+}
+
 
