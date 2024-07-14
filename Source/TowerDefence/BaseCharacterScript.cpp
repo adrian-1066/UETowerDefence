@@ -87,6 +87,7 @@ void ABaseCharacterScript::ScrollHotBar(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("scroll triggered in character Script, the value is %f"), Value.Get<float>());
 	CurrentHotBarSlotSelected = HUDInstance->ChangeSelected(Value.Get<float>());
+	TransTower->SetMesh(HUDInstance->GetHotBarMesh(CurrentHotBarSlotSelected));
 }
 
 FVector ABaseCharacterScript::GetLineTraceLocation()

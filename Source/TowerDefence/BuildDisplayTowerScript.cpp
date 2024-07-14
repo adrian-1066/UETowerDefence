@@ -21,12 +21,12 @@ void ABuildDisplayTowerScript::BeginPlay()
 void ABuildDisplayTowerScript::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	CurrentTime += DeltaTime;
+	/*CurrentTime += DeltaTime;
 	if(CurrentTime >= TimeBetweenSwaps)
 	{
 		CurrentTime = 0.0f;
 		SwapMesh();
-	}
+	}*/
 }
 
 void ABuildDisplayTowerScript::SwapMesh()

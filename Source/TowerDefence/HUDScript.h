@@ -29,8 +29,9 @@ public:
 	UHorizontalBox* HorizontalBoxContainer;*/
 	
 	UFUNCTION(BlueprintCallable, Category = "Widgets")
-	void AddHotBarSlots(int Count);
-	
+	void AddHotBarSlots(UHotBarSlotScript* HotBarSlot);
+	UPROPERTY()
+	TArray<UHotBarSlotScript*> HotBarSlotsRef;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int SelectedHotBarOption;
 	int HotBarSize;
@@ -44,7 +45,7 @@ public:
 
 	UHUDScript(const FObjectInitializer& ObjectInitializer);
 
-	
+	UStaticMesh* GetHotBarMesh(int HotBarNum);
 	
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")

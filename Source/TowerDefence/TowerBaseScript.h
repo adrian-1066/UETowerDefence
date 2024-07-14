@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "TowerBaseScript.generated.h"
 
 UCLASS()
@@ -25,5 +27,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UStaticMeshComponent* TowerMesh;
+
+	UStaticMesh* GetTowerStaticMesh();
+
+	
 
 };

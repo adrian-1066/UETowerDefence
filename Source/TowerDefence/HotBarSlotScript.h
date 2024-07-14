@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "TowerBaseScript.h"
 #include "HotBarSlotScript.generated.h"
 
 /**
@@ -17,7 +18,11 @@ class TOWERDEFENCE_API UHotBarSlotScript : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
 	UStaticMesh* MeshToDisplay;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
+	TSubclassOf<ATowerBaseScript> TowerToSpawn;
 };

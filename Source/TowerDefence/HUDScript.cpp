@@ -32,30 +32,11 @@ void UHUDScript::NativeConstruct()
 	//ChangeSelected(0);
 }
 
-void UHUDScript::AddHotBarSlots(int Count)
+void UHUDScript::AddHotBarSlots(UHotBarSlotScript* HotBarSlot)
 {
-	/*if (!HotBarSlotClass)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CustomWidget1Class is not set"));
-		return;
-	}
-
-	if (!HorizontalBoxContainer)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HorizontalBoxContainer is not bound"));
-		return;
-	}
-
-	for (int32 i = 0; i < Count; ++i)
-	{
-		UHotBarSlotScript* NewWidget = CreateWidget<UHotBarSlotScript>(this, HotBarSlotClass);
-		if (NewWidget)
-		{
-			UHorizontalBoxSlot* HorizontalBoxSlot = HorizontalBoxContainer->AddChildToHorizontalBox(NewWidget);
-			// Optionally, you can customize the slot properties here
-		}
-	}*/
+	HotBarSlotsRef.Add(HotBarSlot);
 }
+
 
 void UHUDScript::SetNumOfSlots(int Total)
 {
@@ -107,6 +88,13 @@ UHUDScript::UHUDScript(const FObjectInitializer& ObjectInitializer)
 			}
 	}*/
 }
+
+UStaticMesh* UHUDScript::GetHotBarMesh(int HotBarNum)
+{
+	
+	return HotBarSlotsRef[HotBarNum]->MeshToDisplay;
+}
+
 
 void UHUDScript::PostLoad()
 {

@@ -27,3 +27,8 @@ void ATowerBaseScript::Tick(float DeltaTime)
 
 }
 
+UStaticMesh* ATowerBaseScript::GetTowerStaticMesh()
+{
+	return TowerMesh->GetStaticMesh();
+}
+
