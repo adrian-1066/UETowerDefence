@@ -91,8 +91,32 @@ UHUDScript::UHUDScript(const FObjectInitializer& ObjectInitializer)
 
 UStaticMesh* UHUDScript::GetHotBarMesh(int HotBarNum)
 {
-	
-	return HotBarSlotsRef[HotBarNum]->MeshToDisplay;
+	//UStaticMeshComponent* temp = Cast<UStaticMeshComponent>(HotBarSlotsRef[HotBarNum]->TowerToSpawn);
+	if(UStaticMeshComponent* temp = Cast<UStaticMeshComponent>(HotBarSlotsRef[HotBarNum]->TowerToSpawn))
+	{
+		UE_LOG(LogTemp,Warning,TEXT("the cast to the static mesh component %d has been successful "), HotBarNum);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("kill yourself %d"), HotBarNum);
+	}
+	/*if(UStaticMesh* test = HotBarSlotsRef[HotBarNum]->GetTowerStaticMesh())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("we gots the ref"));
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("we got no ref"));
+			
+		
+	}*/
+	UStaticMesh* test = HotBarSlotsRef[HotBarNum]->GetTowerStaticMesh();
+	return test;
+}
+
+TSubclassOf<ATowerBaseScript> UHUDScript::TowerTypeToSpawn(int HotBarNum)
+{
+	return HotBarSlotsRef[HotBarNum]->TowerToSpawn;
 }
 
 

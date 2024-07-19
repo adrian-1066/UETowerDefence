@@ -16,19 +16,25 @@ class TOWERDEFENCE_API ATowerBaseScript : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATowerBaseScript();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UStaticMeshComponent* TowerMesh;
 
+	//UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Components")
+	//UStaticMesh* StaticTowerMesh;
+	UPROPERTY(EditAnywhere)
+	int testtwo;
+	UFUNCTION(BlueprintCallable, Category="Components")
 	UStaticMesh* GetTowerStaticMesh();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere)
+	int testone;
+	
+
+	
 
 	
 

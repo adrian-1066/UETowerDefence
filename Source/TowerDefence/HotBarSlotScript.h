@@ -25,4 +25,11 @@ public:
 	UStaticMesh* MeshToDisplay;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
 	TSubclassOf<ATowerBaseScript> TowerToSpawn;
+
+	UFUNCTION(BlueprintCallable, Category = "TowerWidget")
+	UStaticMesh* GetTowerStaticMesh() const;
+
+
+private:
+	ATowerBaseScript* GetDefaultTowerObject() const;
 };

@@ -17,6 +17,7 @@ ATowerBaseScript::ATowerBaseScript()
 void ATowerBaseScript::BeginPlay()
 {
 	Super::BeginPlay();
+	//TowerMesh->SetStaticMesh(StaticTowerMesh);
 	
 }
 
@@ -29,6 +30,6 @@ void ATowerBaseScript::Tick(float DeltaTime)
 
 UStaticMesh* ATowerBaseScript::GetTowerStaticMesh()
 {
-	return TowerMesh->GetStaticMesh();
+	return  TowerMesh ? TowerMesh->GetStaticMesh() : nullptr;
 }
 

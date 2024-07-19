@@ -46,7 +46,8 @@ public:
 	UHUDScript(const FObjectInitializer& ObjectInitializer);
 
 	UStaticMesh* GetHotBarMesh(int HotBarNum);
-	
+
+	TSubclassOf<ATowerBaseScript> TowerTypeToSpawn(int HotBarNum);  
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TArray<UHotBarSlotScript*> BarSlots;

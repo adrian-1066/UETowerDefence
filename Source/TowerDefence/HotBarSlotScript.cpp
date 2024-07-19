@@ -4,4 +4,17 @@
 #include "HotBarSlotScript.h"
 
 
+UStaticMesh* UHotBarSlotScript::GetTowerStaticMesh() const
+{
+	ATowerBaseScript* DefTower = GetDefaultTowerObject();
+	return DefTower && DefTower->TowerMesh ? DefTower->TowerMesh->GetStaticMesh() : nullptr;
+}
 
+ATowerBaseScript* UHotBarSlotScript::GetDefaultTowerObject() const
+{
+	if(TowerToSpawn)
+	{
+		return TowerToSpawn.GetDefaultObject();
+	}
+	return nullptr;
+}

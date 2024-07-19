@@ -57,20 +57,26 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, Category="Enhanced Input")
-	class UInputMappingContext* InputMapping;
+	UInputMappingContext* InputMapping;
 	UPROPERTY(EditAnywhere,Category="Enhanced Input")
-	class UInputAction* MoveAction;
+	UInputAction* MoveAction;
 	UPROPERTY(EditAnywhere, Category="Enhanced Input")
-	class UInputAction* LookAction;
+	UInputAction* LookAction;
 	UPROPERTY(EditAnywhere,Category="Enhanced Input")
-	class UInputAction* JumpAction;
+	UInputAction* JumpAction;
 	UPROPERTY(EditAnywhere,Category="Enhanced Input")
-	class UInputAction* ScrollAction;
+	UInputAction* ScrollAction;
+	UPROPERTY(EditAnywhere,Category="Enhanced Input")
+	UInputAction* RotateAction;
+	UPROPERTY(EditAnywhere,Category="Enhanced Input")
+	UInputAction* PlaceTowerAction;
 
 	virtual void MoveInDirection(const FInputActionValue& Value);
 	virtual void Look(const FInputActionValue& Value);
 	virtual void TriggerJump(const FInputActionValue& Value);
 	virtual void ScrollHotBar(const FInputActionValue& Value);
+	virtual void RotatePlacement(const FInputActionValue& Value);
+	virtual void PlaceTower(const FInputActionValue& Value);
 
 	FVector GetLineTraceLocation();
 	void SpawnTransparentTower();

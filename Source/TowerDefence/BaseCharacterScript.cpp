@@ -90,6 +90,42 @@ void ABaseCharacterScript::ScrollHotBar(const FInputActionValue& Value)
 	TransTower->SetMesh(HUDInstance->GetHotBarMesh(CurrentHotBarSlotSelected));
 }
 
+void ABaseCharacterScript::RotatePlacement(const FInputActionValue& Value)
+{
+	FRotator ActorRotation = TransTower->GetActorRotation();
+	ActorRotation.Add(0.0f,Value.Get<float>(),0.0f);
+	TransTower->SetActorRotation(ActorRotation);
+}
+
+void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		// Define the spawn parameters
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		// Define the spawn location and rotation
+		FVector SpawnLocation = TransTower->GetActorLocation();
+		FRotator SpawnRotation = TransTower->GetActorRotation();
+
+		// Choose the actor class to spawn
+		//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
+
+		// Spawn the actor
+		TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
+		AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
+
+		// Check if the actor was successfully spawned
+		if (SpawnedActor)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
+		}
+	}
+}
+
 FVector ABaseCharacterScript::GetLineTraceLocation()
 {
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -193,6 +229,8 @@ void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		Input->BindAction(LookAction, ETriggerEvent::Triggered,this,&ABaseCharacterScript::Look);
 		Input->BindAction(JumpAction,ETriggerEvent::Started,this,&ABaseCharacterScript::TriggerJump);
 		Input->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &ABaseCharacterScript::ScrollHotBar);
+		Input->BindAction(RotateAction,ETriggerEvent::Triggered,this,&ABaseCharacterScript::RotatePlacement);
+		Input->BindAction(PlaceTowerAction,ETriggerEvent::Started,this,&ABaseCharacterScript::PlaceTower);
 	}
 
 }
