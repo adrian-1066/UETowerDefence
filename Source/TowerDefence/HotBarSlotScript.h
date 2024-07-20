@@ -20,7 +20,7 @@ class TOWERDEFENCE_API UHotBarSlotScript : public UUserWidget
 public:
 	
 
-
+	virtual void NativeConstruct() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
 	UStaticMesh* MeshToDisplay;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")

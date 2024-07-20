@@ -32,6 +32,8 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere)
 	int testone;
+
+private:
 	
 
 	

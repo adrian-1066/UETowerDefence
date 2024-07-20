@@ -4,6 +4,12 @@
 #include "HotBarSlotScript.h"
 
 
+void UHotBarSlotScript::NativeConstruct()
+{
+	Super::NativeConstruct();
+	MeshToDisplay = GetTowerStaticMesh();
+}
+
 UStaticMesh* UHotBarSlotScript::GetTowerStaticMesh() const
 {
 	ATowerBaseScript* DefTower = GetDefaultTowerObject();

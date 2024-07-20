@@ -32,6 +32,14 @@ public:
 	UMaterialInterface* CanPlaceMat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh")
 	UMaterialInterface* CanNotPlaceMat;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="State")
+	bool CanBePlaced;
 	float CurrentTime;
 	float TimeBetweenSwaps;
+private:
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };

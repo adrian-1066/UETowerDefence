@@ -9,7 +9,9 @@ ATowerBaseScript::ATowerBaseScript()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TowerMesh"));
+	
 	RootComponent = TowerMesh;
+	
 
 }
 
@@ -17,9 +19,16 @@ ATowerBaseScript::ATowerBaseScript()
 void ATowerBaseScript::BeginPlay()
 {
 	Super::BeginPlay();
+	//TowerMesh->OnComponentBeginOverlap.AddDynamic(this,&ATowerBaseScript::OnOverlapBegin);
 	//TowerMesh->SetStaticMesh(StaticTowerMesh);
 	
 }
+
+/*void ATowerBaseScript::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp,Warning,TEXT("collision detected"));
+}*/
 
 // Called every frame
 void ATowerBaseScript::Tick(float DeltaTime)

@@ -99,30 +99,37 @@ void ABaseCharacterScript::RotatePlacement(const FInputActionValue& Value)
 
 void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
 {
-	UWorld* World = GetWorld();
-	if (World)
+	if(TransTower->CanBePlaced)
 	{
-		// Define the spawn parameters
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-
-		// Define the spawn location and rotation
-		FVector SpawnLocation = TransTower->GetActorLocation();
-		FRotator SpawnRotation = TransTower->GetActorRotation();
-
-		// Choose the actor class to spawn
-		//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
-
-		// Spawn the actor
-		TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
-		AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
-
-		// Check if the actor was successfully spawned
-		if (SpawnedActor)
+		UWorld* World = GetWorld();
+		if (World)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
+			// Define the spawn parameters
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Define the spawn location and rotation
+			FVector SpawnLocation = TransTower->GetActorLocation();
+			FRotator SpawnRotation = TransTower->GetActorRotation();
+
+			// Choose the actor class to spawn
+			//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
+
+			// Spawn the actor
+			TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
+			AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
+
+			// Check if the actor was successfully spawned
+			if (SpawnedActor)
+			{
+				UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
+			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("tower can not be placed here"));
 	}
 }
 
@@ -161,7 +168,7 @@ FVector ABaseCharacterScript::GetLineTraceLocation()
 		if (bHit)
 		{
 			// Output debug information
-			UE_LOG(LogTemp,Warning,TEXT("the location that was hit %f %f %f"), HitResult.Location.X, HitResult.Location.Y, HitResult.Location.Z)
+			//UE_LOG(LogTemp,Warning,TEXT("the location that was hit %f %f %f"), HitResult.Location.X, HitResult.Location.Y, HitResult.Location.Z)
 			return HitResult.Location;
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
 		}
