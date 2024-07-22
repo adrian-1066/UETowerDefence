@@ -42,3 +42,8 @@ UStaticMesh* ATowerBaseScript::GetTowerStaticMesh()
 	return  TowerMesh ? TowerMesh->GetStaticMesh() : nullptr;
 }
 
+UTexture2D* ATowerBaseScript::GetTowerDisplayImage()
+{
+	return TowerDisplayTexture;
+}
+

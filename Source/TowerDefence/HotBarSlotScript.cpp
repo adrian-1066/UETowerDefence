@@ -8,12 +8,20 @@ void UHotBarSlotScript::NativeConstruct()
 {
 	Super::NativeConstruct();
 	MeshToDisplay = GetTowerStaticMesh();
+	StartImageSetUp(GetDisplayImage());
+	
 }
 
 UStaticMesh* UHotBarSlotScript::GetTowerStaticMesh() const
 {
 	ATowerBaseScript* DefTower = GetDefaultTowerObject();
 	return DefTower && DefTower->TowerMesh ? DefTower->TowerMesh->GetStaticMesh() : nullptr;
+}
+
+UTexture2D* UHotBarSlotScript::GetDisplayImage() const
+{
+	ATowerBaseScript* DefTower = GetDefaultTowerObject();
+	return DefTower->GetTowerDisplayImage();
 }
 
 ATowerBaseScript* UHotBarSlotScript::GetDefaultTowerObject() const

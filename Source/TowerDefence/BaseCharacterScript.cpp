@@ -57,7 +57,7 @@ void ABaseCharacterScript::ReturnLocation(FVector Loc)
 
 void ABaseCharacterScript::MoveInDirection(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp,Warning,TEXT("move action triggered"));
+	//UE_LOG(LogTemp,Warning,TEXT("move action triggered"));
 	FVector2D MovementDirection = Value.Get<FVector2D>();
 	AddMovementInput(GetActorForwardVector(), MovementDirection.Y);
 	AddMovementInput(GetActorRightVector(), MovementDirection.X);

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 #include "TowerBaseScript.h"
 #include "HotBarSlotScript.generated.h"
 
@@ -28,6 +29,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "TowerWidget")
 	UStaticMesh* GetTowerStaticMesh() const;
+	UFUNCTION(BlueprintCallable,Category="TowerWidget")
+	UTexture2D* GetDisplayImage() const;
+	UFUNCTION(BlueprintImplementableEvent, Category="Image")
+	void StartImageSetUp(UTexture2D* ImageToDisplay);
+	
 
 
 private:

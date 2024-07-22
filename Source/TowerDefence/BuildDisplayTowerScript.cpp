@@ -10,7 +10,7 @@ ABuildDisplayTowerScript::ABuildDisplayTowerScript()
 {
 	TimeBetweenSwaps = 2.0f;
 	//TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TowerMesh"));
-	TowerMesh->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	TowerMesh->SetCollisionProfileName(TEXT("DisplayTower"));
 	TowerMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // No collision, only overlap
 	TowerMesh->SetGenerateOverlapEvents(true);
 	//TowerMesh->SetCollisionProfileName(TEXT("OverlapAllDynamic"));

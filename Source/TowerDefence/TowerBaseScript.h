@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 #include "TowerBaseScript.generated.h"
 
 UCLASS()
@@ -20,13 +21,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UStaticMeshComponent* TowerMesh;
-
-	//UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Components")
-	//UStaticMesh* StaticTowerMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Image")
+	UTexture2D* TowerDisplayTexture;
+	
 	UPROPERTY(EditAnywhere)
 	int testtwo;
 	UFUNCTION(BlueprintCallable, Category="Components")
 	UStaticMesh* GetTowerStaticMesh();
+	UFUNCTION(BlueprintCallable, Category="Components")
+	UTexture2D* GetTowerDisplayImage();
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
