@@ -23,7 +23,14 @@ public:
 	UStaticMeshComponent* TowerMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Image")
 	UTexture2D* TowerDisplayTexture;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
+	float MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
+	float CurrentHealth;
+
+	void TakeDamage(float damage);
+
+	virtual void TowerDeath();
 	UPROPERTY(EditAnywhere)
 	int testtwo;
 	UFUNCTION(BlueprintCallable, Category="Components")

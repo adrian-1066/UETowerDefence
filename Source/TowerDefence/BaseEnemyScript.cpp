@@ -32,3 +32,8 @@ void ABaseEnemyScript::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+UBehaviorTree* ABaseEnemyScript::GetBhTree() const
+{
+	return BhTree;
+}
+

@@ -37,6 +37,20 @@ void ATowerBaseScript::Tick(float DeltaTime)
 
 }
 
+void ATowerBaseScript::TakeDamage(float damage)
+{
+	CurrentHealth -= damage;
+	if(CurrentHealth <= 0)
+	{
+		TowerDeath();
+	}
+}
+
+void ATowerBaseScript::TowerDeath()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Tower has died"));
+}
+
 UStaticMesh* ATowerBaseScript::GetTowerStaticMesh()
 {
 	return  TowerMesh ? TowerMesh->GetStaticMesh() : nullptr;
