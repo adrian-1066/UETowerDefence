@@ -5,6 +5,11 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "TowerToDefendScript.h"
+#include "BaseCharacterScript.h"
+#include "BaseEnemyScript.h"
+#include "Engine/World.h"
+#include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameManagerComp.generated.h"
 
 
@@ -17,14 +22,34 @@ public:
 	// Sets default values for this component's properties
 	UGameManagerComp();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
 	ATowerToDefendScript* DefencePointRef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
+	TArray<AActor*> SpawnLocations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
+	int TotalNumOfEnemies;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
+	int CurrentRound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
+	TSubclassOf<ABaseEnemyScript> EnemyToSpawn;
+	UPROPERTY()
+	ABaseCharacterScript* PlayerCharacter;
+	
+	void StartSetUp();
+	void NextRoundStart();
+	void EndRound();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-	void GetTowerToDefend();
+
+	void SpawnEnemies();
+	void SetPlayerCharacter();
+	int CurrentRoundSize;
+	
+	UPROPERTY()
+	TArray<ABaseEnemyScript*> ListOfEnemies; 
 		
 };

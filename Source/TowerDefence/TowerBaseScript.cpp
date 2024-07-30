@@ -37,14 +37,14 @@ void ATowerBaseScript::Tick(float DeltaTime)
 
 }
 
-void ATowerBaseScript::TakeDamage(float damage)
+/*void ATowerBaseScript::TakeDamage(float damage)
 {
 	CurrentHealth -= damage;
 	if(CurrentHealth <= 0)
 	{
 		TowerDeath();
 	}
-}
+}*/
 
 void ATowerBaseScript::TowerDeath()
 {

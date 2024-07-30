@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
 	float CurrentHealth;
 
-	void TakeDamage(float damage);
+	//void TakeDamage(float damage);
 
 	virtual void TowerDeath();
 	UPROPERTY(EditAnywhere)

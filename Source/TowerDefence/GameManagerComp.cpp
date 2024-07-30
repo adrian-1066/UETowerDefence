@@ -12,15 +12,73 @@ UGameManagerComp::UGameManagerComp()
 
 	// ...
 }
-
-
 // Called when the game starts
 void UGameManagerComp::BeginPlay()
 {
 	Super::BeginPlay();
+	SetPlayerCharacter();
+	StartSetUp();
+}
 
-	// ...
-	
+void UGameManagerComp::StartSetUp()
+{
+	SpawnEnemies();
+	CurrentRound = 1;
+}
+
+void UGameManagerComp::NextRoundStart()
+{
+}
+
+void UGameManagerComp::EndRound()
+{
+	CurrentRound++;
+}
+
+void UGameManagerComp::SpawnEnemies()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = GetOwner();
+		SpawnParams.Instigator = GetOwner()->GetInstigator();
+		for(int i = 0; i < TotalNumOfEnemies; i++ )
+		{
+			FVector SpawnLocation = FVector(100.0f * i + i, -1000.0f, 88.0f);
+			FRotator SpawnRotation = FRotator::ZeroRotator;
+			AActor* SpawnedActor = World->SpawnActor<AActor>(EnemyToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+
+			if (SpawnedActor)
+			{
+				ABaseEnemyScript* SpawnedEnemy = Cast<ABaseEnemyScript>(SpawnedActor);
+				if(SpawnedEnemy)
+				{
+					UE_LOG(LogTemp,Warning,TEXT("correct Enemy Has Spawned"));
+					ListOfEnemies.Add(SpawnedEnemy);
+				}
+				else
+				{
+					UE_LOG(LogTemp,Warning,TEXT("spawn failed"));
+				}
+			}
+		}
+	}
+}
+
+void UGameManagerComp::SetPlayerCharacter()
+{
+	ACharacter* PC = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	ABaseCharacterScript* ABCS = Cast<ABaseCharacterScript>(PC);
+	if(ABCS)
+	{
+		PlayerCharacter = ABCS;
+		UE_LOG(LogTemp,Warning,TEXT("player character ref has been set"));
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("player character ref has failed"));
+	}
 }
 
 
