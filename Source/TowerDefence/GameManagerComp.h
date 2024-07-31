@@ -9,6 +9,7 @@
 #include "BaseEnemyScript.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "NPCAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameManagerComp.generated.h"
 
@@ -33,6 +34,8 @@ public:
 	int CurrentRound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
 	TSubclassOf<ABaseEnemyScript> EnemyToSpawn;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Level Info")
+	//TSubclassOf<ANPCAIController> AICon;
 	UPROPERTY()
 	ABaseCharacterScript* PlayerCharacter;
 	

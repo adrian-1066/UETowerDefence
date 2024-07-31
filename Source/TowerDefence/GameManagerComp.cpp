@@ -47,7 +47,7 @@ void UGameManagerComp::SpawnEnemies()
 		{
 			FVector SpawnLocation = FVector(100.0f * i + i, -1000.0f, 88.0f);
 			FRotator SpawnRotation = FRotator::ZeroRotator;
-			AActor* SpawnedActor = World->SpawnActor<AActor>(EnemyToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+			AActor* SpawnedActor = World->SpawnActor<ABaseEnemyScript>(EnemyToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 
 			if (SpawnedActor)
 			{
@@ -55,7 +55,14 @@ void UGameManagerComp::SpawnEnemies()
 				if(SpawnedEnemy)
 				{
 					UE_LOG(LogTemp,Warning,TEXT("correct Enemy Has Spawned"));
+					ANPCAIController* AIConToCon = GetWorld()->SpawnActor<ANPCAIController>(ANPCAIController::StaticClass());
+					AIConToCon->Possess(SpawnedEnemy);
 					ListOfEnemies.Add(SpawnedEnemy);
+					if(i == 0)
+					{
+						SpawnedEnemy->StartAttacking();
+						SpawnedEnemy->StopAttacking();
+					}
 				}
 				else
 				{

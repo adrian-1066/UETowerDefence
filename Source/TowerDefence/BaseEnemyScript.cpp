@@ -3,6 +3,8 @@
 
 #include "BaseEnemyScript.h"
 
+#include "NPCAIController.h"
+
 // Sets default values
 ABaseEnemyScript::ABaseEnemyScript()
 {
@@ -35,5 +37,17 @@ void ABaseEnemyScript::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 UBehaviorTree* ABaseEnemyScript::GetBhTree() const
 {
 	return BhTree;
+}
+
+void ABaseEnemyScript::StartAttacking()
+{
+	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
+	Con->RunBHTree();
+}
+
+void ABaseEnemyScript::StopAttacking()
+{
+	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
+	Con->StopBhTree();
 }
 

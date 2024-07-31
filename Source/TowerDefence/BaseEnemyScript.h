@@ -22,6 +22,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UBehaviorTree* GetBhTree() const;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	bool IsAlive;
+	void StartAttacking();
+	void StopAttacking();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
