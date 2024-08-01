@@ -5,6 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "GameManagerComp.h"
 #include "BaseEnemyScript.h"
 
 ANPCAIController::ANPCAIController(FObjectInitializer const& ObjectInitializer)
@@ -15,13 +16,14 @@ ANPCAIController::ANPCAIController(FObjectInitializer const& ObjectInitializer)
 
 void ANPCAIController::RunBHTree()
 {
-	RunBehaviorTree(BhTreeToRun);
-	
+	//RunBehaviorTree(BhTreeToRun);
+	Blackboard->SetValueAsBool("IsActive", true);
 	UE_LOG(LogTemp,Warning,TEXT("the bh tree is now running"));
 }
 
 void ANPCAIController::StopBhTree()
 {
+	Blackboard->SetValueAsBool("IsActive", false);
 	if (BehaviorComp)
 	{
 		BehaviorComp->StopLogic(TEXT("AI Stopped for round break"));
@@ -31,6 +33,11 @@ void ANPCAIController::StopBhTree()
 	{
 		UE_LOG(LogTemp, Error, TEXT("BehaviorComp is null in StopBhTree"));
 	}
+}
+
+void ANPCAIController::SetGameManager(UGameManagerComp* ManagerRef)
+{
+	GameManagerRef = ManagerRef;
 }
 
 void ANPCAIController::OnPossess(APawn* InPawn)
@@ -50,10 +57,11 @@ void ANPCAIController::OnPossess(APawn* InPawn)
 			BhTreeToRun = tree;
 				//RunBehaviorTree(tree);
 			BehaviorComp = Cast<UBehaviorTreeComponent>(BrainComponent);
+			RunBehaviorTree(BhTreeToRun);
 			UE_LOG(LogTemp,Warning,TEXT("the bh tree is now stored"));
 			if(BehaviorComp)
 			{
-				UE_LOG(LogTemp,Warning,TEXT("have got BHComp"));	
+				//UE_LOG(LogTemp,Warning,TEXT("have got BHComp"));	
 			}
 			else
 			{
@@ -61,4 +69,9 @@ void ANPCAIController::OnPossess(APawn* InPawn)
 			}
 		}
 	}
+}
+
+TArray<AActor*> ANPCAIController::GetAllTowers()
+{
+	return GameManagerRef->GetAllTowers();
 }

@@ -20,6 +20,11 @@ void UGameManagerComp::BeginPlay()
 	StartSetUp();
 }
 
+TArray<AActor*> UGameManagerComp::GetAllTowers()
+{
+	return PlayerCharacter->TowersThatHaveBeenPlaced;
+}
+
 void UGameManagerComp::StartSetUp()
 {
 	SpawnEnemies();
@@ -33,6 +38,11 @@ void UGameManagerComp::NextRoundStart()
 void UGameManagerComp::EndRound()
 {
 	CurrentRound++;
+	for(int i = 0; i < TotalNumOfEnemies; i++)
+	{
+		ListOfEnemies[i]->StopAttacking();
+	}
+	
 }
 
 void UGameManagerComp::SpawnEnemies()
@@ -56,13 +66,13 @@ void UGameManagerComp::SpawnEnemies()
 				{
 					UE_LOG(LogTemp,Warning,TEXT("correct Enemy Has Spawned"));
 					ANPCAIController* AIConToCon = GetWorld()->SpawnActor<ANPCAIController>(ANPCAIController::StaticClass());
+					AIConToCon->TowerToAttack = DefencePointRef;
+					AIConToCon->SetGameManager(this);
 					AIConToCon->Possess(SpawnedEnemy);
+					
 					ListOfEnemies.Add(SpawnedEnemy);
-					if(i == 0)
-					{
-						SpawnedEnemy->StartAttacking();
-						SpawnedEnemy->StopAttacking();
-					}
+					SpawnedEnemy->StartAttacking();
+					
 				}
 				else
 				{
@@ -70,6 +80,7 @@ void UGameManagerComp::SpawnEnemies()
 				}
 			}
 		}
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
 	}
 }
 

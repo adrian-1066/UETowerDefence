@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "TowerToDefendScript.h"
 //#include "BehaviorTree/BehaviorTreeComponent.h"
 
 #include "NPCAIController.generated.h"
 
 
+class UGameManagerComp;
 /**
  * 
  */
@@ -28,6 +31,15 @@ public:
 	UBehaviorTree* BhTreeToRun;
 	void RunBHTree();
 	void StopBhTree();
+	UPROPERTY()
+	ATowerToDefendScript* TowerToAttack;
+	void SetGameManager(UGameManagerComp* ManagerRef);
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+	
+	
+private:
+	TArray<AActor*> GetAllTowers();
+	UPROPERTY()
+	UGameManagerComp* GameManagerRef;
 };

@@ -8,6 +8,7 @@
 #include "BaseCharacterScript.h"
 #include "BaseEnemyScript.h"
 #include "Engine/World.h"
+#include "TimerManager.h"
 #include "GameFramework/Actor.h"
 #include "NPCAIController.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,7 +39,8 @@ public:
 	//TSubclassOf<ANPCAIController> AICon;
 	UPROPERTY()
 	ABaseCharacterScript* PlayerCharacter;
-	
+
+	TArray<AActor*> GetAllTowers();
 	void StartSetUp();
 	void NextRoundStart();
 	void EndRound();
@@ -51,7 +53,7 @@ private:
 	void SpawnEnemies();
 	void SetPlayerCharacter();
 	int CurrentRoundSize;
-	
+	FTimerHandle TimerHandle;
 	UPROPERTY()
 	TArray<ABaseEnemyScript*> ListOfEnemies; 
 		

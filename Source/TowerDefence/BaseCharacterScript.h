@@ -38,6 +38,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Player State")
 	bool BuildMode;
 
+	void ChangeMode();
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tower Builder")
 	TSubclassOf<AActor> TransparentTower;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tower Builder")
@@ -47,6 +49,8 @@ public:
 	AActor* SpawnedTransparentTower;
 	UPROPERTY()
 	ABuildDisplayTowerScript* TransTower;
+	UPROPERTY()
+	TArray<AActor*> TowersThatHaveBeenPlaced;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")
 	void GetLocation();
@@ -83,6 +87,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UHUDScript> HUDClass;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	
 
 	int CurrentHotBarSlotSelected;
 

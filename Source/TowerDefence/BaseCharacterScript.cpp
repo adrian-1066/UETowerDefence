@@ -119,7 +119,7 @@ void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
 			// Spawn the actor
 			TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
 			AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
-
+			TowersThatHaveBeenPlaced.Add(SpawnedActor);
 			// Check if the actor was successfully spawned
 			if (SpawnedActor)
 			{
@@ -240,5 +240,17 @@ void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		Input->BindAction(PlaceTowerAction,ETriggerEvent::Started,this,&ABaseCharacterScript::PlaceTower);
 	}
 
+}
+
+void ABaseCharacterScript::ChangeMode()
+{
+	if(BuildMode)
+	{
+		BuildMode = false;
+	}
+	else if(!BuildMode)
+	{
+		BuildMode = true;
+	}
 }
 
