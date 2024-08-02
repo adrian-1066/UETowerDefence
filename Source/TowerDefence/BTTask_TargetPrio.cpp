@@ -5,7 +5,7 @@
 
 #include "NavigationSystem.h"
 #include "NPCAIController.h"
-
+#include "BehaviorTree/BlackboardComponent.h"
 UBTTask_TargetPrio::UBTTask_TargetPrio(FObjectInitializer const& ObjectInitializer)
 {
 	NodeName = "Establish Prio";
@@ -20,6 +20,28 @@ EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& Owne
 	{
 		UE_LOG(LogTemp,Warning,TEXT("failed to get ai con"));
 	}
+
+	if(CanMoveToTarget(AICON, AICON->TowerToAttack->GetActorLocation()))
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),AICON->TowerToAttack->GetActorLocation());
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+	}
+
+	UE_LOG(LogTemp,Warning,TEXT("num of towers is: %d"), AICON->GetAllTowers().Num());
+	for(int i = 0; i < AICON->GetAllTowers().Num(); i++)
+	{
+		if(CanMoveToTarget(AICON, AICON->GetAllTowers()[i]->GetActorLocation()))
+		{
+			UE_LOG(LogTemp,Warning,TEXT("can move to tower"));
+			OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),AICON->GetAllTowers()[i]->GetActorLocation());
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return EBTNodeResult::Succeeded;
+		}
+	}
+
+	FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
+	return EBTNodeResult::Failed;
 
 	
 	return Super::ExecuteTask(OwnerComp, NodeMemory);

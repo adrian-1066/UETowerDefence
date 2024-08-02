@@ -33,6 +33,10 @@ void UGameManagerComp::StartSetUp()
 
 void UGameManagerComp::NextRoundStart()
 {
+	for(int i = 0; i < TotalNumOfEnemies; i++)
+	{
+		ListOfEnemies[i]->StartAttacking();
+	}
 }
 
 void UGameManagerComp::EndRound()
@@ -71,6 +75,7 @@ void UGameManagerComp::SpawnEnemies()
 					AIConToCon->Possess(SpawnedEnemy);
 					
 					ListOfEnemies.Add(SpawnedEnemy);
+					//SpawnedEnemy->StopAttacking();
 					SpawnedEnemy->StartAttacking();
 					
 				}
@@ -80,7 +85,8 @@ void UGameManagerComp::SpawnEnemies()
 				}
 			}
 		}
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
+		//EndRound();
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,5.0f,true);
 	}
 }
 

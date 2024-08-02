@@ -34,12 +34,13 @@ public:
 	UPROPERTY()
 	ATowerToDefendScript* TowerToAttack;
 	void SetGameManager(UGameManagerComp* ManagerRef);
+	TArray<AActor*> GetAllTowers();
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	
 	
 private:
-	TArray<AActor*> GetAllTowers();
+	
 	UPROPERTY()
 	UGameManagerComp* GameManagerRef;
 };
