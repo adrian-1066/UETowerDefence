@@ -49,7 +49,7 @@ public:
 	AActor* SpawnedTransparentTower;
 	UPROPERTY()
 	ABuildDisplayTowerScript* TransTower;
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Tower Builder")
 	TArray<AActor*> TowersThatHaveBeenPlaced;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")

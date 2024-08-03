@@ -206,6 +206,7 @@ void ABaseCharacterScript::SpawnTransparentTower()
 		if (SpawnedActor)
 		{
 			TransTower = Cast<ABuildDisplayTowerScript>(SpawnedActor);
+			TransTower->CanBePlaced = true;
 			if(TransTower)
 			{
 				UE_LOG(LogTemp,Warning,TEXT("display tower is of type display"))
