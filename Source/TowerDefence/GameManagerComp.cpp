@@ -18,6 +18,7 @@ void UGameManagerComp::BeginPlay()
 	Super::BeginPlay();
 	SetPlayerCharacter();
 	StartSetUp();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,2.0f,true);
 }
 
 TArray<AActor*> UGameManagerComp::GetAllTowers()
@@ -46,6 +47,7 @@ void UGameManagerComp::EndRound()
 	{
 		ListOfEnemies[i]->StopAttacking();
 	}
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,2.0f,true);
 	
 }
 
@@ -73,7 +75,7 @@ void UGameManagerComp::SpawnEnemies()
 					AIConToCon->TowerToAttack = DefencePointRef;
 					AIConToCon->SetGameManager(this);
 					AIConToCon->Possess(SpawnedEnemy);
-					
+					SpawnedEnemy->NPCID = i;
 					ListOfEnemies.Add(SpawnedEnemy);
 					//SpawnedEnemy->StopAttacking();
 					SpawnedEnemy->StartAttacking();
@@ -86,7 +88,7 @@ void UGameManagerComp::SpawnEnemies()
 			}
 		}
 		//EndRound();
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,5.0f,true);
+		//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,5.0f,true);
 	}
 }
 

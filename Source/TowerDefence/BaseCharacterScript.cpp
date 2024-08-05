@@ -253,5 +253,6 @@ void ABaseCharacterScript::ChangeMode()
 	{
 		BuildMode = true;
 	}
+	
 }
 

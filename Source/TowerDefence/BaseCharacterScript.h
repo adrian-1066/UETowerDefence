@@ -57,6 +57,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Tower Builder")
 	void ReturnLocation(FVector Loc);
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

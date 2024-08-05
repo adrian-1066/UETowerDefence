@@ -26,6 +26,18 @@ public:
 	bool IsAlive;
 	void StartAttacking();
 	void StopAttacking();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float AttackRange;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float AttackDamage;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float MaxHealth;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float CurrentHealth;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	int NPCID;
+	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void OnDeath();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "TowerBaseScript.h"
 #include "Components/SphereComponent.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 #include "AttackTowerBaseScript.generated.h"
 
 /**
@@ -19,6 +21,14 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	float AttackRange;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float AttackSpeed;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float AttackDamage;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	int TargetsPerAttack;
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	USphereComponent* SphereComponent;
@@ -27,7 +37,13 @@ private:
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	FTimerHandle AttackTimer;
+	void Attack(AActor* Target);
+	void AttackReset();
+	void AttackLoop();
+	bool CanAttack;
+	UPROPERTY()
+	TArray<AActor*> ListOfTargets;
 protected:
 	virtual void BeginPlay() override;
 	

@@ -19,6 +19,8 @@ public:
 	ATowerBaseScript();
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UStaticMeshComponent* TowerMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Image")

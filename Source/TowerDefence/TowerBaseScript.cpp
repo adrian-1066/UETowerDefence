@@ -37,6 +37,15 @@ void ATowerBaseScript::Tick(float DeltaTime)
 
 }
 
+float ATowerBaseScript::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+
+	UE_LOG(LogTemp,Warning,TEXT("tower has taken damage"));
+	return 0.0f;
+	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 /*void ATowerBaseScript::TakeDamage(float damage)
 {
 	CurrentHealth -= damage;

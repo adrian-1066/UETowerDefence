@@ -24,6 +24,7 @@ EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& Owne
 	if(CanMoveToTarget(AICON, AICON->TowerToAttack->GetActorLocation()))
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),AICON->TowerToAttack->GetActorLocation());
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj", AICON->TowerToAttack);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;
 	}
@@ -35,6 +36,7 @@ EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& Owne
 		{
 			UE_LOG(LogTemp,Warning,TEXT("can move to tower"));
 			OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),AICON->GetAllTowers()[i]->GetActorLocation());
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj",AICON->GetAllTowers()[i]);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;
 		}

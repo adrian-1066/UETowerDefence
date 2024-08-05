@@ -24,21 +24,26 @@ void ANPCAIController::RunBHTree()
 void ANPCAIController::StopBhTree()
 {
 	Blackboard->SetValueAsBool("IsActive", false);
-	if (BehaviorComp)
-	{
-		BehaviorComp->StopLogic(TEXT("AI Stopped for round break"));
-		UE_LOG(LogTemp, Warning, TEXT("Behavior tree stopped"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("BehaviorComp is null in StopBhTree"));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Behavior tree stopped"));
+	
 }
 
 void ANPCAIController::SetGameManager(UGameManagerComp* ManagerRef)
 {
 	GameManagerRef = ManagerRef;
 }
+
+
+void ANPCAIController::HasJustAttacked()
+{
+	CanAttack = false;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&ANPCAIController::AttackReset,2.0f,true);
+}
+void ANPCAIController::AttackReset()
+{
+	CanAttack = true;
+}
+
 
 void ANPCAIController::OnPossess(APawn* InPawn)
 {
@@ -50,11 +55,13 @@ void ANPCAIController::OnPossess(APawn* InPawn)
 			UBlackboardComponent* b;
 			
 			
-			
+			CanAttack = true;
 			UseBlackboard(tree->BlackboardAsset, b);
 			Blackboard = b;
 			//BehaviorComp
 			BhTreeToRun = tree;
+			AttDamage = npc->AttackDamage;
+			AttRange = npc->AttackRange;
 				//RunBehaviorTree(tree);
 			BehaviorComp = Cast<UBehaviorTreeComponent>(BrainComponent);
 			RunBehaviorTree(BhTreeToRun);

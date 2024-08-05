@@ -7,6 +7,9 @@
 
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "TowerToDefendScript.h"
+
+#include "Engine/World.h"
+#include "TimerManager.h"
 //#include "BehaviorTree/BehaviorTreeComponent.h"
 
 #include "NPCAIController.generated.h"
@@ -35,6 +38,11 @@ public:
 	ATowerToDefendScript* TowerToAttack;
 	void SetGameManager(UGameManagerComp* ManagerRef);
 	TArray<AActor*> GetAllTowers();
+	float AttRange;
+	float AttDamage;
+	bool CanAttack;
+	void HasJustAttacked();
+	
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	
@@ -43,4 +51,9 @@ private:
 	
 	UPROPERTY()
 	UGameManagerComp* GameManagerRef;
+	FTimerHandle AttackTimer;
+	
+	void AttackReset();
 };
+
+

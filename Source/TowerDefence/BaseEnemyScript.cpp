@@ -13,10 +13,30 @@ ABaseEnemyScript::ABaseEnemyScript()
 
 }
 
+float ABaseEnemyScript::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	CurrentHealth -= DamageAmount;
+	if(CurrentHealth <= 0)
+	{
+		OnDeath();
+	}
+	return 0.0f;
+	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ABaseEnemyScript::OnDeath()
+{
+	UE_LOG(LogTemp,Error,TEXT("NPC %d has dies"), NPCID);
+	StopAttacking();
+	SetActorLocation(FVector(-1000.0f+ (100.0f * NPCID), -1000.0f, -1000.0f + (100.0f * NPCID)));
+}
+
 // Called when the game starts or when spawned
 void ABaseEnemyScript::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHealth = MaxHealth;
 	
 }
 
