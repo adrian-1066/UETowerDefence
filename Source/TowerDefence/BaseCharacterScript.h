@@ -52,12 +52,17 @@ public:
 	UPROPERTY(VisibleAnywhere, Category="Tower Builder")
 	TArray<AActor*> TowersThatHaveBeenPlaced;
 
+	UPROPERTY()
+	AActor* GameManagerActor;
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "CustomEvents")
 	void GetLocation();
 
 	UFUNCTION(BlueprintCallable, Category="Tower Builder")
 	void ReturnLocation(FVector Loc);
-
+	UPROPERTY()
+	UHUDScript* HUDInstance;
+	void CharacterSetUp();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -76,6 +81,8 @@ protected:
 	UInputAction* RotateAction;
 	UPROPERTY(EditAnywhere,Category="Enhanced Input")
 	UInputAction* PlaceTowerAction;
+	UPROPERTY(EditAnywhere,Category="Enhanced Input")
+	UInputAction* StartNextRoundAction;
 
 	virtual void MoveInDirection(const FInputActionValue& Value);
 	virtual void Look(const FInputActionValue& Value);
@@ -93,9 +100,10 @@ protected:
 	
 
 	int CurrentHotBarSlotSelected;
-
+	
 private:
-	UPROPERTY()
-	UHUDScript* HUDInstance;
+	
+
+	void StartNextRound();
 
 };

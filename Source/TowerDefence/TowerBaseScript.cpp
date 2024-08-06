@@ -19,6 +19,7 @@ ATowerBaseScript::ATowerBaseScript()
 void ATowerBaseScript::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHealth = MaxHealth;
 	//TowerMesh->OnComponentBeginOverlap.AddDynamic(this,&ATowerBaseScript::OnOverlapBegin);
 	//TowerMesh->SetStaticMesh(StaticTowerMesh);
 	
@@ -42,8 +43,18 @@ float ATowerBaseScript::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 {
 
 	UE_LOG(LogTemp,Warning,TEXT("tower has taken damage"));
+	CurrentHealth -= DamageAmount;
+	if(CurrentHealth <= 0.0f)
+	{
+		OnDeath();
+	}
 	return 0.0f;
 	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ATowerBaseScript::OnDeath()
+{
+	UE_LOG(LogTemp,Warning,TEXT("tower has dies using the base version of the function"));
 }
 
 /*void ATowerBaseScript::TakeDamage(float damage)

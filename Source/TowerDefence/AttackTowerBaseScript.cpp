@@ -21,10 +21,23 @@ void AAttackTowerBaseScript::BeginPlay()
 	SphereComponent->SetSphereRadius(AttackRange);
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AAttackTowerBaseScript::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AAttackTowerBaseScript::OnOverlapEnd);
+	SpawnLocation = GetActorLocation();
+}
+
+void AAttackTowerBaseScript::OnDeath()
+{
+	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,GetActorLocation().Z-1000.0f));
+	//Super::OnDeath();
+}
+
+void AAttackTowerBaseScript::Respawn()
+{
+	CurrentHealth = MaxHealth;
+	SetActorLocation(SpawnLocation);
 }
 
 void AAttackTowerBaseScript::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(ListOfTargets.IsEmpty())
 	{

@@ -18,7 +18,7 @@ void UGameManagerComp::BeginPlay()
 	Super::BeginPlay();
 	SetPlayerCharacter();
 	StartSetUp();
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,2.0f,true);
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,2.0f,true);
 }
 
 TArray<AActor*> UGameManagerComp::GetAllTowers()
@@ -30,6 +30,7 @@ void UGameManagerComp::StartSetUp()
 {
 	SpawnEnemies();
 	CurrentRound = 1;
+	PlayerCharacter->HUDInstance->UpdateRoundNum(CurrentRound);
 }
 
 void UGameManagerComp::NextRoundStart()
@@ -43,12 +44,28 @@ void UGameManagerComp::NextRoundStart()
 void UGameManagerComp::EndRound()
 {
 	CurrentRound++;
+	PlayerCharacter->HUDInstance->UpdateRoundNum(CurrentRound);
 	for(int i = 0; i < TotalNumOfEnemies; i++)
 	{
 		ListOfEnemies[i]->StopAttacking();
 	}
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,2.0f,true);
 	
+}
+
+void UGameManagerComp::LoseGame()
+{
+	if(GetWorld())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("you have lost the game"));
+		UGameplayStatics::OpenLevel(GetWorld(),"LoseGameLevel");
+	}
+	
+}
+
+void UGameManagerComp::WinGame()
+{
+	UE_LOG(LogTemp,Warning,TEXT("you have won the game"));
 }
 
 void UGameManagerComp::SpawnEnemies()
@@ -77,8 +94,8 @@ void UGameManagerComp::SpawnEnemies()
 					AIConToCon->Possess(SpawnedEnemy);
 					SpawnedEnemy->NPCID = i;
 					ListOfEnemies.Add(SpawnedEnemy);
-					//SpawnedEnemy->StopAttacking();
-					SpawnedEnemy->StartAttacking();
+					SpawnedEnemy->StopAttacking();
+					//SpawnedEnemy->StartAttacking();
 					
 				}
 				else
@@ -88,7 +105,7 @@ void UGameManagerComp::SpawnEnemies()
 			}
 		}
 		//EndRound();
-		//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,5.0f,true);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
 	}
 }
 
@@ -99,6 +116,8 @@ void UGameManagerComp::SetPlayerCharacter()
 	if(ABCS)
 	{
 		PlayerCharacter = ABCS;
+		ABCS->CharacterSetUp();
+		ABCS->GameManagerActor = GetOwner();
 		UE_LOG(LogTemp,Warning,TEXT("player character ref has been set"));
 	}
 	else

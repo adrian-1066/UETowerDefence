@@ -30,6 +30,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Widgets")
 	void AddHotBarSlots(UHotBarSlotScript* HotBarSlot);
+	UFUNCTION(BlueprintImplementableEvent, Category="CustomEvents")
+	void UpdateRoundNum(int CurrentROund);
 	UPROPERTY()
 	TArray<UHotBarSlotScript*> HotBarSlotsRef;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")

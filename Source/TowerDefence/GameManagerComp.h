@@ -44,6 +44,8 @@ public:
 	void StartSetUp();
 	void NextRoundStart();
 	void EndRound();
+	void LoseGame();
+	void WinGame();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

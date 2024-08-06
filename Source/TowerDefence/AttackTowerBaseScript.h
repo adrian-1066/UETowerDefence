@@ -29,6 +29,9 @@ public:
 	float AttackDamage;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int TargetsPerAttack;
+
+	void OnDeath() override;
+	void Respawn();
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	USphereComponent* SphereComponent;
@@ -44,6 +47,7 @@ private:
 	bool CanAttack;
 	UPROPERTY()
 	TArray<AActor*> ListOfTargets;
+	FVector SpawnLocation;
 protected:
 	virtual void BeginPlay() override;
 	

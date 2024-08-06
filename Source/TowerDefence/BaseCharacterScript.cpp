@@ -5,6 +5,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameManagerComp.h"
 #include "UObject/ConstructorHelpers.h"
 // Sets default values
 ABaseCharacterScript::ABaseCharacterScript()
@@ -19,12 +20,22 @@ ABaseCharacterScript::ABaseCharacterScript()
 	CurrentHotBarSlotSelected = 0;
 
 }
+
+
+
 // Called when the game starts or when spawned
 void ABaseCharacterScript::BeginPlay()
 {
 	Super::BeginPlay();
 	SpawnTransparentTower();
 
+	
+	
+	//UHUDScript* HudDisplay = CreateWidget<UHUDScript>(GetWorld(),UHUDScript::StaticClass());
+	
+}
+void ABaseCharacterScript::CharacterSetUp()
+{
 	if(HUDClass)
 	{
 		HUDInstance = CreateWidget<UHUDScript>(GetWorld(),HUDClass);
@@ -34,8 +45,7 @@ void ABaseCharacterScript::BeginPlay()
 		}
 	}
 	HUDInstance->ChangeSelected(0);
-	//UHUDScript* HudDisplay = CreateWidget<UHUDScript>(GetWorld(),UHUDScript::StaticClass());
-	
+
 }
 // Called every frame
 void ABaseCharacterScript::Tick(float DeltaTime)
@@ -218,6 +228,16 @@ void ABaseCharacterScript::SpawnTransparentTower()
 	}
 }
 
+void ABaseCharacterScript::StartNextRound()
+{
+	UGameManagerComp* GameManager = Cast<UGameManagerComp>(GameManagerActor->GetComponentByClass(UGameManagerComp::StaticClass()));
+	if(GameManager)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("have gotten game manager in player class"));
+		GameManager->NextRoundStart();
+	}
+}
+
 
 // Called to bind functionality to input
 void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -239,6 +259,7 @@ void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		Input->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &ABaseCharacterScript::ScrollHotBar);
 		Input->BindAction(RotateAction,ETriggerEvent::Triggered,this,&ABaseCharacterScript::RotatePlacement);
 		Input->BindAction(PlaceTowerAction,ETriggerEvent::Started,this,&ABaseCharacterScript::PlaceTower);
+		Input->BindAction(StartNextRoundAction,ETriggerEvent::Triggered,this,&ABaseCharacterScript::StartNextRound);
 	}
 
 }
