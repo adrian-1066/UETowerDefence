@@ -32,6 +32,10 @@ public:
 	void AddHotBarSlots(UHotBarSlotScript* HotBarSlot);
 	UFUNCTION(BlueprintImplementableEvent, Category="CustomEvents")
 	void UpdateRoundNum(int CurrentROund);
+	UFUNCTION(BlueprintImplementableEvent, Category="CustomEvents")
+	void UpdateGoldText(int Amount);
+	UFUNCTION(BlueprintImplementableEvent, Category="CustomEvents")
+	void UpdateDefenceHealth(float Amount);
 	UPROPERTY()
 	TArray<UHotBarSlotScript*> HotBarSlotsRef;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")

@@ -24,7 +24,7 @@ public:
 	UBehaviorTree* GetBhTree() const;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	bool IsAlive;
-	void StartAttacking();
+	void StartAttacking(FVector SpawnLoc);
 	void StopAttacking();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	float AttackRange;

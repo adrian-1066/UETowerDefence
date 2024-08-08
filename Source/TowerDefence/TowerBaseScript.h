@@ -29,7 +29,8 @@ public:
 	float MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats")
 	float CurrentHealth;
-
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	int GoldCost;
 	//void TakeDamage(float damage);
 
 	virtual void TowerDeath();

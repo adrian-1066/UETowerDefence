@@ -39,6 +39,12 @@ void ANPCAIController::HasJustAttacked()
 	CanAttack = false;
 	GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&ANPCAIController::AttackReset,2.0f,true);
 }
+
+void ANPCAIController::NPCDeath(int ID)
+{
+	GameManagerRef->NPCDeath(ID);
+}
+
 void ANPCAIController::AttackReset()
 {
 	CanAttack = true;

@@ -51,7 +51,7 @@ void AAttackTowerBaseScript::OnOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		ListOfTargets.Add(OtherActor);	
 	}
 	
-	UE_LOG(LogTemp,Warning,TEXT("in attack Range"));
+	//UE_LOG(LogTemp,Warning,TEXT("in attack Range"));
 }
 
 void AAttackTowerBaseScript::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -62,7 +62,7 @@ void AAttackTowerBaseScript::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, A
 	{
 		//stop the attack loop
 	}
-	UE_LOG(LogTemp,Warning,TEXT("no longer in attack Range"));
+	//UE_LOG(LogTemp,Warning,TEXT("no longer in attack Range"));
 }
 
 void AAttackTowerBaseScript::Attack(AActor* Target)
@@ -80,7 +80,7 @@ void AAttackTowerBaseScript::AttackReset()
 
 void AAttackTowerBaseScript::AttackLoop()
 {
-	UE_LOG(LogTemp,Warning,TEXT("the number of targets is %d"), ListOfTargets.Num());
+	//UE_LOG(LogTemp,Warning,TEXT("the number of targets is %d"), ListOfTargets.Num());
 	for(int i = 0; i < TargetsPerAttack; i++)
 	{
 		if(i < ListOfTargets.Num())
@@ -95,11 +95,11 @@ void AAttackTowerBaseScript::AttackLoop()
 
 	if(!ListOfTargets.IsEmpty())
 	{
-		GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&AAttackTowerBaseScript::AttackLoop,AttackSpeed,true);
+		GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&AAttackTowerBaseScript::AttackLoop,AttackSpeed,false);
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("attack has stopped due to no targets"));
+		//UE_LOG(LogTemp,Warning,TEXT("attack has stopped due to no targets"));
 	}
 }
 

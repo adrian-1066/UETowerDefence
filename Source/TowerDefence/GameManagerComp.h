@@ -46,6 +46,8 @@ public:
 	void EndRound();
 	void LoseGame();
 	void WinGame();
+	void NPCDeath(int NPCID);
+	bool RoundStarted;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -55,7 +57,10 @@ private:
 	void SpawnEnemies();
 	void SetPlayerCharacter();
 	int CurrentRoundSize;
+	int CurrentNPCSpawned;
+	int NPCDefeatedThisRound;
 	FTimerHandle TimerHandle;
+	FTimerHandle RoundTimer;
 	UPROPERTY()
 	TArray<ABaseEnemyScript*> ListOfEnemies; 
 		

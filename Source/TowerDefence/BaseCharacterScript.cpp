@@ -22,6 +22,11 @@ ABaseCharacterScript::ABaseCharacterScript()
 }
 
 
+void ABaseCharacterScript::UpdateGold(int Value)
+{
+	Gold += Value;
+	HUDInstance->UpdateGoldText(Gold);
+}
 
 // Called when the game starts or when spawned
 void ABaseCharacterScript::BeginPlay()
@@ -45,6 +50,7 @@ void ABaseCharacterScript::CharacterSetUp()
 		}
 	}
 	HUDInstance->ChangeSelected(0);
+	UpdateGold(500);
 
 }
 // Called every frame
@@ -60,7 +66,7 @@ void ABaseCharacterScript::Tick(float DeltaTime)
 
 void ABaseCharacterScript::ReturnLocation(FVector Loc)
 {
-	UE_LOG(LogTemp,Warning,TEXT("the location to display is %f %f %f"), Loc.X, Loc.Y, Loc.Z);
+	//UE_LOG(LogTemp,Warning,TEXT("the location to display is %f %f %f"), Loc.X, Loc.Y, Loc.Z);
 }
 
 
@@ -85,7 +91,7 @@ void ABaseCharacterScript::Look(const FInputActionValue& Value)
 void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 {
 	
-	UE_LOG(LogTemp,Warning,TEXT("Jump triggered"));
+	//UE_LOG(LogTemp,Warning,TEXT("Jump triggered"));
 	const bool Triggered = Value.Get<bool>();
 	if(Triggered)
 	{
@@ -95,7 +101,7 @@ void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 
 void ABaseCharacterScript::ScrollHotBar(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("scroll triggered in character Script, the value is %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Warning, TEXT("scroll triggered in character Script, the value is %f"), Value.Get<float>());
 	CurrentHotBarSlotSelected = HUDInstance->ChangeSelected(Value.Get<float>());
 	TransTower->SetMesh(HUDInstance->GetHotBarMesh(CurrentHotBarSlotSelected));
 }
@@ -114,6 +120,14 @@ void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
 		UWorld* World = GetWorld();
 		if (World)
 		{
+			TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
+			if(Gold < TowerType.GetDefaultObject()->GoldCost)
+			{
+				UE_LOG(LogTemp,Warning,TEXT("can not afford tower"));
+				return;
+			}
+
+			UpdateGold(-TowerType.GetDefaultObject()->GoldCost);
 			// Define the spawn parameters
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
@@ -127,19 +141,19 @@ void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
 			//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
 
 			// Spawn the actor
-			TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
+			
 			AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
 			TowersThatHaveBeenPlaced.Add(SpawnedActor);
 			// Check if the actor was successfully spawned
 			if (SpawnedActor)
 			{
-				UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
+				//UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
 			}
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("tower can not be placed here"));
+		//UE_LOG(LogTemp,Warning,TEXT("tower can not be placed here"));
 	}
 }
 
@@ -234,6 +248,10 @@ void ABaseCharacterScript::StartNextRound()
 	if(GameManager)
 	{
 		UE_LOG(LogTemp,Warning,TEXT("have gotten game manager in player class"));
+		if(GameManager->RoundStarted)
+		{
+			return;
+		}
 		GameManager->NextRoundStart();
 	}
 }

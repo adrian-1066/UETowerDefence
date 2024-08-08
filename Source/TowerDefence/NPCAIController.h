@@ -42,6 +42,7 @@ public:
 	float AttDamage;
 	bool CanAttack;
 	void HasJustAttacked();
+	void NPCDeath(int ID);
 	
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

@@ -30,6 +30,9 @@ void ABaseEnemyScript::OnDeath()
 	UE_LOG(LogTemp,Error,TEXT("NPC %d has dies"), NPCID);
 	StopAttacking();
 	SetActorLocation(FVector(-1000.0f+ (100.0f * NPCID), -1000.0f, -1000.0f + (100.0f * NPCID)));
+	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
+	Con->NPCDeath(NPCID);
+	
 }
 
 // Called when the game starts or when spawned
@@ -59,9 +62,11 @@ UBehaviorTree* ABaseEnemyScript::GetBhTree() const
 	return BhTree;
 }
 
-void ABaseEnemyScript::StartAttacking()
+void ABaseEnemyScript::StartAttacking(FVector SpawnLoc)
 {
+	CurrentHealth = MaxHealth;
 	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
+	SetActorLocation(SpawnLoc);
 	Con->RunBHTree();
 }
 

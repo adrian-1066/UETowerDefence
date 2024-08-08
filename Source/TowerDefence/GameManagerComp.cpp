@@ -6,11 +6,7 @@
 // Sets default values for this component's properties
 UGameManagerComp::UGameManagerComp()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 // Called when the game starts
 void UGameManagerComp::BeginPlay()
@@ -28,28 +24,54 @@ TArray<AActor*> UGameManagerComp::GetAllTowers()
 
 void UGameManagerComp::StartSetUp()
 {
-	SpawnEnemies();
 	CurrentRound = 1;
+	CurrentRoundSize = 12;
+	CurrentNPCSpawned = 0;
+	NPCDefeatedThisRound = 0;
+	TotalNumOfEnemies = 62;
+	RoundStarted = false;
+	SpawnEnemies();
+	
 	PlayerCharacter->HUDInstance->UpdateRoundNum(CurrentRound);
 }
 
 void UGameManagerComp::NextRoundStart()
 {
+	RoundStarted = true;
+	if(CurrentNPCSpawned >= CurrentRoundSize)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("round Spawning STOPPED"));
+		return;
+	}
+	UE_LOG(LogTemp,Warning,TEXT("Spawning num %d npc"), CurrentNPCSpawned);
+	ListOfEnemies[CurrentNPCSpawned]->MaxHealth = 100 + (CurrentRound * 20);
+	ListOfEnemies[CurrentNPCSpawned]->StartAttacking(SpawnLocations[0]->GetActorLocation());
+	CurrentNPCSpawned++;
+	GetWorld()->GetTimerManager().SetTimer(RoundTimer,this,&UGameManagerComp::NextRoundStart,1.0f,false);
+	/*
 	for(int i = 0; i < TotalNumOfEnemies; i++)
 	{
 		ListOfEnemies[i]->StartAttacking();
-	}
+	}*/
 }
 
 void UGameManagerComp::EndRound()
 {
+	RoundStarted = false;
 	CurrentRound++;
+	CurrentNPCSpawned = 0;
+	NPCDefeatedThisRound = 0;
+	CurrentRoundSize = 12 + (CurrentRound * 4);
 	PlayerCharacter->HUDInstance->UpdateRoundNum(CurrentRound);
 	for(int i = 0; i < TotalNumOfEnemies; i++)
 	{
 		ListOfEnemies[i]->StopAttacking();
 	}
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,2.0f,true);
+	if(CurrentRound >= 11)
+	{
+		WinGame();
+	}
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,2.0f,true);
 	
 }
 
@@ -66,6 +88,17 @@ void UGameManagerComp::LoseGame()
 void UGameManagerComp::WinGame()
 {
 	UE_LOG(LogTemp,Warning,TEXT("you have won the game"));
+	UGameplayStatics::OpenLevel(GetWorld(),"WinGameLevel");
+}
+
+void UGameManagerComp::NPCDeath(int NPCID)
+{
+	NPCDefeatedThisRound++;
+	PlayerCharacter->UpdateGold(ListOfEnemies[NPCID]->MaxHealth / 10);
+	if(NPCDefeatedThisRound >= CurrentRoundSize)
+	{
+		EndRound();
+	}
 }
 
 void UGameManagerComp::SpawnEnemies()
@@ -105,7 +138,7 @@ void UGameManagerComp::SpawnEnemies()
 			}
 		}
 		//EndRound();
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
+		//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
 	}
 }
 

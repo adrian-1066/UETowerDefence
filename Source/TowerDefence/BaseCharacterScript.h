@@ -63,6 +63,10 @@ public:
 	UPROPERTY()
 	UHUDScript* HUDInstance;
 	void CharacterSetUp();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	int Gold;
+
+	void UpdateGold(int Value);
 	
 protected:
 	// Called when the game starts or when spawned

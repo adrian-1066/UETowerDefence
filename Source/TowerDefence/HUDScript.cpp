@@ -94,11 +94,11 @@ UStaticMesh* UHUDScript::GetHotBarMesh(int HotBarNum)
 	//UStaticMeshComponent* temp = Cast<UStaticMeshComponent>(HotBarSlotsRef[HotBarNum]->TowerToSpawn);
 	if(UStaticMeshComponent* temp = Cast<UStaticMeshComponent>(HotBarSlotsRef[HotBarNum]->TowerToSpawn))
 	{
-		UE_LOG(LogTemp,Warning,TEXT("the cast to the static mesh component %d has been successful "), HotBarNum);
+		//UE_LOG(LogTemp,Warning,TEXT("the cast to the static mesh component %d has been successful "), HotBarNum);
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("kill yourself %d"), HotBarNum);
+		//UE_LOG(LogTemp,Warning,TEXT("kill yourself %d"), HotBarNum);
 	}
 	/*if(UStaticMesh* test = HotBarSlotsRef[HotBarNum]->GetTowerStaticMesh())
 	{
