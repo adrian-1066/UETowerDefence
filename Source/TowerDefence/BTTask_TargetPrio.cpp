@@ -10,7 +10,7 @@ UBTTask_TargetPrio::UBTTask_TargetPrio(FObjectInitializer const& ObjectInitializ
 {
 	NodeName = "Establish Prio";
 }
-
+/*
 EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 
@@ -41,12 +41,48 @@ EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& Owne
 			return EBTNodeResult::Succeeded;
 		}
 	}
-
+	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	return EBTNodeResult::Succeeded;
 	FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
 	return EBTNodeResult::Failed;
 
 	
 	return Super::ExecuteTask(OwnerComp, NodeMemory);
+}*/
+EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	TArray<AActor*> Towers;
+	ANPCAIController* AICON = Cast<ANPCAIController>(OwnerComp.GetAIOwner());
+	if (!AICON)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to get AI controller"));
+		return EBTNodeResult::Failed;
+	}
+
+	// First, check the primary target
+	if (CanMoveToTarget(AICON, AICON->TowerToAttack->GetActorLocation()))
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), AICON->TowerToAttack->GetActorLocation());
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj", AICON->TowerToAttack);
+		return EBTNodeResult::Succeeded;
+	}
+	Towers = AICON->GetAllTowers();
+	UE_LOG(LogTemp,Warning,TEXT("there are %d towers"), Towers.Num());
+	// Then, check all other towers
+	for (AActor* Tower : Towers)
+	{
+		if (CanMoveToTarget(AICON, Tower->GetActorLocation()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found a reachable tower"));
+			OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLoc", Tower->GetActorLocation());
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj", Tower);
+			return EBTNodeResult::Succeeded;
+		}
+	}
+
+	// If no target can be found
+	UE_LOG(LogTemp, Warning, TEXT("No reachable towers found"));
+	return EBTNodeResult::Failed;
 }
 
 bool UBTTask_TargetPrio::CanMoveToTarget(ANPCAIController* AICon, const FVector TargetLoc) const

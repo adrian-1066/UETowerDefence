@@ -10,7 +10,7 @@ UBTTask_IsWithinAttackRange::UBTTask_IsWithinAttackRange(FObjectInitializer cons
 {
 	NodeName = "Is Within Attack Range";
 }
-
+/*
 EBTNodeResult::Type UBTTask_IsWithinAttackRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	
@@ -44,6 +44,8 @@ EBTNodeResult::Type UBTTask_IsWithinAttackRange::ExecuteTask(UBehaviorTreeCompon
 							FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 							return EBTNodeResult::Succeeded;
 						}
+						FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+						return EBTNodeResult::Succeeded;
 					}
 					else
 					{
@@ -72,4 +74,43 @@ EBTNodeResult::Type UBTTask_IsWithinAttackRange::ExecuteTask(UBehaviorTreeCompon
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
 	return Super::ExecuteTask(OwnerComp, NodeMemory);
+}*/
+EBTNodeResult::Type UBTTask_IsWithinAttackRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	if (ANPCAIController* NPCCon = Cast<ANPCAIController>(OwnerComp.GetAIOwner()))
+	{
+		UBlackboardComponent* BlackboardComponent = NPCCon->GetBlackboardComponent();
+		if (BlackboardComponent && NPCCon->CanAttack)
+		{
+			AActor* Target = Cast<AActor>(BlackboardComponent->GetValueAsObject("TargetObj"));
+			AActor* NPC = NPCCon->GetPawn();
+
+			if (Target && NPC)
+			{
+				float DistanceToTarget = FVector::Dist(Target->GetActorLocation(), NPC->GetActorLocation());
+				if (DistanceToTarget <= NPCCon->AttRange)
+				{
+					// Attack the target
+					FDamageEvent DamageEvent;
+					Target->TakeDamage(NPCCon->AttDamage, DamageEvent, NPCCon, NPC);
+					NPCCon->HasJustAttacked();
+
+					// Task succeeds only after attack
+					return EBTNodeResult::Succeeded;
+				}
+				else
+				{
+					// Not in range, consider failure or task continuation
+					return EBTNodeResult::Failed;
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cannot attack yet or no valid blackboard component"));
+		}
+	}
+
+	// Failure condition
+	return EBTNodeResult::Failed;
 }

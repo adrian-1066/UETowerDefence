@@ -111,7 +111,7 @@ void UGameManagerComp::SpawnEnemies()
 		SpawnParams.Instigator = GetOwner()->GetInstigator();
 		for(int i = 0; i < TotalNumOfEnemies; i++ )
 		{
-			FVector SpawnLocation = FVector(100.0f * i + i, -1000.0f, 88.0f);
+			FVector SpawnLocation = FVector(100.0f * i + i, -1000.0f, -9800.0f);
 			FRotator SpawnRotation = FRotator::ZeroRotator;
 			AActor* SpawnedActor = World->SpawnActor<ABaseEnemyScript>(EnemyToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 
