@@ -89,6 +89,37 @@ bool UBTTask_TargetPrio::CanMoveToTarget(ANPCAIController* AICon, const FVector 
 {
 	if(AICon == nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("No AI Controller"));
+		return false;
+	}
+
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(AICon->GetWorld());
+
+	if(NavSys == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Navigation System"));
+		return false;
+	}
+
+	NavSys->Build(); // Ensure the NavMesh is up to date before pathfinding
+
+	FPathFindingQuery Query;
+	Query.StartLocation = AICon->GetPawn()->GetActorLocation();
+	Query.EndLocation = TargetLoc;
+	Query.NavData = NavSys->GetDefaultNavDataInstance(FNavigationSystem::DontCreate);
+
+	FPathFindingResult Result = NavSys->FindPathSync(Query);
+
+	// Check if the pathfinding operation was successful and if a path was found
+	if(Result.IsSuccessful() && Result.Path.IsValid() && Result.Path->IsValid() && Result.Path->GetPathPoints().Num() > 1)
+	{
+		return true;
+	}
+
+	return false;
+	/*
+	if(AICon == nullptr)
+	{
 		UE_LOG(LogTemp,Warning,TEXT("No ai con"));
 		return false;
 	}
@@ -107,5 +138,5 @@ bool UBTTask_TargetPrio::CanMoveToTarget(ANPCAIController* AICon, const FVector 
 	Query.NavData = NavSys->GetDefaultNavDataInstance(FNavigationSystem::DontCreate);
 	FPathFindingResult Result = NavSys->FindPathSync(Query);
 
-	return Result.IsSuccessful();
+	return Result.IsSuccessful();*/
 }

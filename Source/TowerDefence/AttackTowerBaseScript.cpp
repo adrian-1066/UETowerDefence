@@ -11,9 +11,11 @@ AAttackTowerBaseScript::AAttackTowerBaseScript()
 	SphereComponent->InitSphereRadius(50.0f);
 	SphereComponent->SetCollisionProfileName(TEXT("TowerPreset"));
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // No collision, only overlap
+
 	SphereComponent->SetGenerateOverlapEvents(true);
+	
 	SphereComponent->SetupAttachment(RootComponent);
-	//RootComponent = SphereComponent;
+
 }
 void AAttackTowerBaseScript::BeginPlay()
 {
@@ -26,7 +28,8 @@ void AAttackTowerBaseScript::BeginPlay()
 
 void AAttackTowerBaseScript::OnDeath()
 {
-	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,GetActorLocation().Z-1000.0f));
+	//Destroy();
+	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,GetActorLocation().Z-10000.0f));
 	//Super::OnDeath();
 }
 
