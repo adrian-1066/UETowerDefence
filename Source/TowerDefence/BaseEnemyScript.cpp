@@ -17,7 +17,10 @@ ABaseEnemyScript::ABaseEnemyScript()
 float ABaseEnemyScript::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	
+	if(!IsAlive)
+	{
+		return 0.0f;
+	}
 	CurrentHealth -= DamageAmount;
 	if(CurrentHealth <= 0)
 	{
@@ -29,6 +32,10 @@ float ABaseEnemyScript::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 
 void ABaseEnemyScript::TakeSlowDamage(float DamageAmount, float Reduction)
 {
+	if(!IsAlive)
+	{
+		return;
+	}
 	CurrentHealth -= DamageAmount;
 	if(CurrentHealth <= 0)
 	{
@@ -39,6 +46,36 @@ void ABaseEnemyScript::TakeSlowDamage(float DamageAmount, float Reduction)
 	GetWorld()->GetTimerManager().SetTimer(SlowTimer,this,&ABaseEnemyScript::RestoreSpeed, 5.0f,false);
 }
 
+void ABaseEnemyScript::StartFireDamage(float DamageAmount)
+{
+	FireTicks = 0;
+	GetWorld()->GetTimerManager().ClearTimer(FireTimer);
+	FireEffect(DamageAmount);
+}
+
+void ABaseEnemyScript::FireEffect(float DamageAmount)
+{
+	FireTicks++;
+	if(!IsAlive)
+	{
+		return;
+	}
+	CurrentHealth -= DamageAmount;
+	if(CurrentHealth <= 0)
+	{
+		OnDeath();
+		return;
+	}
+	if(FireTicks >= 6)
+	{
+		return;
+	}
+	FTimerDelegate TimerDel;
+	TimerDel.BindLambda([=](){FireEffect(DamageAmount);});
+	//TimerDel.BindUFunction(this,FName("FireEffect"), DamageAmount);
+	GetWorld()->GetTimerManager().SetTimer(FireTimer,TimerDel, 0.25,false);
+}
+
 void ABaseEnemyScript::RestoreSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
@@ -47,8 +84,9 @@ void ABaseEnemyScript::RestoreSpeed()
 void ABaseEnemyScript::OnDeath()
 {
 	UE_LOG(LogTemp,Error,TEXT("NPC %d has dies"), NPCID);
+	IsAlive = false;
 	StopAttacking();
-	SetActorLocation(FVector(-1000.0f+ (100.0f * NPCID), -1000.0f, -1000.0f + (100.0f * NPCID)));
+	SetActorLocation(FVector(-1000.0f+ (-1000.0f * NPCID), -1000.0f, -1000.0f + (-1000.0f * NPCID)));
 	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
 	Con->NPCDeath(NPCID);
 	
@@ -85,6 +123,7 @@ UBehaviorTree* ABaseEnemyScript::GetBhTree() const
 void ABaseEnemyScript::StartAttacking(FVector SpawnLoc)
 {
 	CurrentHealth = MaxHealth;
+	IsAlive = true;
 	ANPCAIController* Con = Cast<ANPCAIController>(GetController());
 	SetActorLocation(SpawnLoc);
 	Con->RunBHTree();

@@ -3,6 +3,7 @@
 
 #include "AttackTowerBaseScript.h"
 
+#include "BaseCharacterScript.h"
 #include "Engine/DamageEvents.h"
 
 AAttackTowerBaseScript::AAttackTowerBaseScript()
@@ -38,6 +39,12 @@ void AAttackTowerBaseScript::OnDeath()
 {
 	//Destroy();
 	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,GetActorLocation().Z-10000.0f));
+	ABaseCharacterScript* Player = Cast<ABaseCharacterScript>( GetWorld()->GetFirstPlayerController()->GetCharacter());
+	if(Player)
+	{
+		Player->TowersThatHaveBeenPlaced.RemoveSingle(this);
+	}
+	Destroy();
 	//Super::OnDeath();
 }
 

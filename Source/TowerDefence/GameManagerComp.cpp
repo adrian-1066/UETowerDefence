@@ -44,7 +44,8 @@ void UGameManagerComp::NextRoundStart()
 		return;
 	}
 	UE_LOG(LogTemp,Warning,TEXT("Spawning num %d npc"), CurrentNPCSpawned);
-	ListOfEnemies[CurrentNPCSpawned]->MaxHealth = 100 + (CurrentRound * 20);
+	ListOfEnemies[CurrentNPCSpawned]->MaxHealth = 150 + (CurrentRound * 60);
+	ListOfEnemies[CurrentNPCSpawned]->BaseMoveSpeed += 45;
 	ListOfEnemies[CurrentNPCSpawned]->StartAttacking(SpawnLocations[0]->GetActorLocation());
 	CurrentNPCSpawned++;
 	GetWorld()->GetTimerManager().SetTimer(RoundTimer,this,&UGameManagerComp::NextRoundStart,1.0f,false);

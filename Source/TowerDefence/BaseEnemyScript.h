@@ -42,8 +42,12 @@ public:
 	int NPCID;
 
 	FTimerHandle SlowTimer;
+	FTimerHandle FireTimer;
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void TakeSlowDamage(float DamageAmount, float Reduction);
+	void StartFireDamage(float DamageAmount);
+	void FireEffect(float DamageAmount);
+	int FireTicks;
 	void RestoreSpeed();
 	void OnDeath();
 protected:
