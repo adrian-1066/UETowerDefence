@@ -4,6 +4,7 @@
 #include "BaseEnemyScript.h"
 
 #include "NPCAIController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseEnemyScript::ABaseEnemyScript()
@@ -16,6 +17,7 @@ ABaseEnemyScript::ABaseEnemyScript()
 float ABaseEnemyScript::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	
 	CurrentHealth -= DamageAmount;
 	if(CurrentHealth <= 0)
 	{
@@ -23,6 +25,23 @@ float ABaseEnemyScript::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	}
 	return 0.0f;
 	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ABaseEnemyScript::TakeSlowDamage(float DamageAmount, float Reduction)
+{
+	CurrentHealth -= DamageAmount;
+	if(CurrentHealth <= 0)
+	{
+		OnDeath();
+	}
+	float TempSpeed = BaseMoveSpeed * Reduction;
+	GetCharacterMovement()->MaxWalkSpeed = TempSpeed;
+	GetWorld()->GetTimerManager().SetTimer(SlowTimer,this,&ABaseEnemyScript::RestoreSpeed, 5.0f,false);
+}
+
+void ABaseEnemyScript::RestoreSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
 }
 
 void ABaseEnemyScript::OnDeath()
@@ -40,6 +59,7 @@ void ABaseEnemyScript::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentHealth = MaxHealth;
+	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
 	
 }
 

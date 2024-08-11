@@ -13,9 +13,17 @@ AAttackTowerBaseScript::AAttackTowerBaseScript()
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // No collision, only overlap
 
 	SphereComponent->SetGenerateOverlapEvents(true);
-	
+	SphereComponent->SetCanEverAffectNavigation(false);
 	SphereComponent->SetupAttachment(RootComponent);
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->InitBoxExtent(FVector(50.0f, 50.0f, 50.0f));
+	BoxComponent->SetCollisionProfileName(TEXT("BlockAll"));
+	BoxComponent->SetCanEverAffectNavigation(true);
+	BoxComponent->SetupAttachment(RootComponent);
+	UNavModifierComponent* NavModifier = CreateDefaultSubobject<UNavModifierComponent>(TEXT("NavModifier"));
+
+	
 }
 void AAttackTowerBaseScript::BeginPlay()
 {

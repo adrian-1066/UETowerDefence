@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "GameFramework/Character.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 #include "BaseEnemyScript.generated.h"
 
 UCLASS()
@@ -35,8 +37,14 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	float CurrentHealth;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
+	float BaseMoveSpeed;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int NPCID;
+
+	FTimerHandle SlowTimer;
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void TakeSlowDamage(float DamageAmount, float Reduction);
+	void RestoreSpeed();
 	void OnDeath();
 protected:
 	// Called when the game starts or when spawned

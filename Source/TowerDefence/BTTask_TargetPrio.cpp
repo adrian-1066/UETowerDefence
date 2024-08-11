@@ -69,15 +69,34 @@ EBTNodeResult::Type UBTTask_TargetPrio::ExecuteTask(UBehaviorTreeComponent& Owne
 	Towers = AICON->GetAllTowers();
 	UE_LOG(LogTemp,Warning,TEXT("there are %d towers"), Towers.Num());
 	// Then, check all other towers
+	AActor* ClosetTower = nullptr;
 	for (AActor* Tower : Towers)
 	{
 		if (CanMoveToTarget(AICON, Tower->GetActorLocation()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Found a reachable tower"));
-			OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLoc", Tower->GetActorLocation());
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj", Tower);
-			return EBTNodeResult::Succeeded;
+			if(ClosetTower == nullptr)
+			{
+				ClosetTower = Tower;
+			}
+			else
+			{
+				float CurrentDistance = FVector::Dist(ClosetTower->GetActorLocation(), AICON->GetPawn()->GetActorLocation());
+				float NewDistance = FVector::Dist(Tower->GetActorLocation(), AICON->GetPawn()->GetActorLocation());
+				if(NewDistance <= CurrentDistance)
+				{
+					ClosetTower = Tower;
+				}
+			}
+			
 		}
+	}
+
+	if(ClosetTower != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found a reachable tower"));
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLoc", ClosetTower->GetActorLocation());
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject("TargetObj", ClosetTower);
+		return EBTNodeResult::Succeeded;
 	}
 
 	// If no target can be found
@@ -101,23 +120,62 @@ bool UBTTask_TargetPrio::CanMoveToTarget(ANPCAIController* AICon, const FVector 
 		return false;
 	}
 
-	NavSys->Build(); // Ensure the NavMesh is up to date before pathfinding
+	// Define the acceptance radius
+	const float AcceptanceRadius = 500.0f;
 
 	FPathFindingQuery Query;
 	Query.StartLocation = AICon->GetPawn()->GetActorLocation();
 	Query.EndLocation = TargetLoc;
 	Query.NavData = NavSys->GetDefaultNavDataInstance(FNavigationSystem::DontCreate);
+	//Query.QueryFilter = UNavigationQueryFilter::GetQueryFilter<UNavigationQueryFilter>(NavSys);
+	Query.SetAllowPartialPaths(true); // Allow partial paths to check for near-by locations
 
 	FPathFindingResult Result = NavSys->FindPathSync(Query);
 
 	// Check if the pathfinding operation was successful and if a path was found
-	if(Result.IsSuccessful() && Result.Path.IsValid() && Result.Path->IsValid() && Result.Path->GetPathPoints().Num() > 1)
+	if(Result.IsSuccessful() && Result.Path.IsValid() && Result.Path->IsValid())
 	{
-		return true;
+		// Get the last point in the path
+		FVector LastPathPoint = Result.Path->GetPathPoints().Last().Location;
+
+		// Check if the last point is within the acceptance radius
+		if(FVector::Dist(LastPathPoint, TargetLoc) <= AcceptanceRadius)
+		{
+			return true;
+		}
 	}
 
 	return false;
 	/*
+	if(AICon == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No AI Controller"));
+		return false;
+	}
+
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(AICon->GetWorld());
+
+	if(NavSys == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Navigation System"));
+		return false;
+	}
+
+	FPathFindingQuery Query;
+	Query.StartLocation = AICon->GetPawn()->GetActorLocation();
+	Query.EndLocation = TargetLoc;
+	Query.NavData = NavSys->GetDefaultNavDataInstance(FNavigationSystem::DontCreate);
+	FPathFindingResult Result = NavSys->FindPathSync(Query);
+
+	// Check if the pathfinding operation was successful and if a path was found
+	if(Result.IsSuccessful() && Result.Path.IsValid() && Result.Path->IsValid())
+	{
+		return true;
+	}
+*/
+	return false;
+	/*
+	
 	if(AICon == nullptr)
 	{
 		UE_LOG(LogTemp,Warning,TEXT("No ai con"));

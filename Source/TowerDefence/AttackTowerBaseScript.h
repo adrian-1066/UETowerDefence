@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "TowerBaseScript.h"
 #include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
+#include "NavigationSystem.h"
+#include "NavModifierComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "AttackTowerBaseScript.generated.h"
@@ -35,13 +38,14 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	USphereComponent* SphereComponent;
-
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	UBoxComponent* BoxComponent;
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	FTimerHandle AttackTimer;
-	void Attack(AActor* Target);
+	
 	void AttackReset();
 	void AttackLoop();
 	bool CanAttack;
@@ -50,5 +54,5 @@ private:
 	FVector SpawnLocation;
 protected:
 	virtual void BeginPlay() override;
-	
+	virtual void Attack(AActor* Target);
 };
