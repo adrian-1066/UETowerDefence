@@ -4,6 +4,7 @@
 #include "AttackTowerBaseScript.h"
 
 #include "BaseCharacterScript.h"
+#include "BaseEnemyScript.h"
 #include "Engine/DamageEvents.h"
 
 AAttackTowerBaseScript::AAttackTowerBaseScript()
@@ -33,6 +34,12 @@ void AAttackTowerBaseScript::BeginPlay()
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AAttackTowerBaseScript::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AAttackTowerBaseScript::OnOverlapEnd);
 	SpawnLocation = GetActorLocation();
+	AudioPlayer = FindComponentByClass<UAwakeAudioPlayer>();
+	if(AudioPlayer)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("found audio"));
+	}
+	DetectOverlappingActors();
 }
 
 void AAttackTowerBaseScript::OnDeath()
@@ -61,34 +68,41 @@ void AAttackTowerBaseScript::OnOverlapBegin(UPrimitiveComponent* OverlappedComp,
 	{
 		ListOfTargets.Add(OtherActor);
 		AttackLoop();
-		//GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&AAttackTowerBaseScript::AttackLoop,0.0f,true);
-		//start attack
 	}
 	else
 	{
 		ListOfTargets.Add(OtherActor);	
 	}
 	
-	//UE_LOG(LogTemp,Warning,TEXT("in attack Range"));
 }
+
+void AAttackTowerBaseScript::DetectOverlappingActors()
+{
+	TArray<AActor*> OverlappingActors;
+	SphereComponent->GetOverlappingActors(OverlappingActors,ABaseEnemyScript::StaticClass());
+
+	for (AActor* Actor : OverlappingActors)
+	{
+		if (Actor)
+		{
+			OnOverlapBegin(SphereComponent, Actor, nullptr, 0, false, FHitResult());
+		}
+	}
+}
+
 
 void AAttackTowerBaseScript::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	ListOfTargets.Remove(OtherActor);
-	if(ListOfTargets.IsEmpty())
-	{
-		//stop the attack loop
-	}
-	//UE_LOG(LogTemp,Warning,TEXT("no longer in attack Range"));
 }
 
 void AAttackTowerBaseScript::Attack(AActor* Target)
 {
+	UE_LOG(LogTemp,Warning,TEXT("attacking"));
 	FDamageEvent DamageEvent;
 	Target->TakeDamage(AttackDamage, DamageEvent, GetWorld()->GetFirstPlayerController(),this);
-	//CanAttack = false;
-	//GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&AAttackTowerBaseScript::AttackReset,AttackSpeed,true);
+
 }
 
 void AAttackTowerBaseScript::AttackReset()
@@ -98,11 +112,11 @@ void AAttackTowerBaseScript::AttackReset()
 
 void AAttackTowerBaseScript::AttackLoop()
 {
-	//UE_LOG(LogTemp,Warning,TEXT("the number of targets is %d"), ListOfTargets.Num());
 	for(int i = 0; i < TargetsPerAttack; i++)
 	{
 		if(i < ListOfTargets.Num())
 		{
+			AudioPlayer->PlaySound("AttackSound");
 			Attack(ListOfTargets[i]);
 		}
 		else
@@ -115,10 +129,7 @@ void AAttackTowerBaseScript::AttackLoop()
 	{
 		GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&AAttackTowerBaseScript::AttackLoop,AttackSpeed,false);
 	}
-	else
-	{
-		//UE_LOG(LogTemp,Warning,TEXT("attack has stopped due to no targets"));
-	}
+	
 }
 
 

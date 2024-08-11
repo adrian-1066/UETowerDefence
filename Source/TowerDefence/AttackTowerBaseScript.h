@@ -10,6 +10,7 @@
 #include "NavModifierComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "AwakeAudioPlayer.h"
 #include "AttackTowerBaseScript.generated.h"
 
 /**
@@ -32,7 +33,7 @@ public:
 	float AttackDamage;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int TargetsPerAttack;
-
+	UAwakeAudioPlayer* AudioPlayer;
 	void OnDeath() override;
 	void Respawn();
 private:
@@ -45,7 +46,8 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	FTimerHandle AttackTimer;
-	
+
+	void DetectOverlappingActors();
 	void AttackReset();
 	void AttackLoop();
 	bool CanAttack;
@@ -56,3 +58,5 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Attack(AActor* Target);
 };
+
+

@@ -11,20 +11,20 @@
 ANPCAIController::ANPCAIController(FObjectInitializer const& ObjectInitializer)
 {
 	BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
-	//BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+
 }
 
 void ANPCAIController::RunBHTree()
 {
 	//RunBehaviorTree(BhTreeToRun);
 	Blackboard->SetValueAsBool("IsActive", true);
-	UE_LOG(LogTemp,Warning,TEXT("the bh tree is now running"));
+
 }
 
 void ANPCAIController::StopBhTree()
 {
 	Blackboard->SetValueAsBool("IsActive", false);
-	UE_LOG(LogTemp, Warning, TEXT("Behavior tree stopped"));
+
 	
 }
 
@@ -64,22 +64,15 @@ void ANPCAIController::OnPossess(APawn* InPawn)
 			CanAttack = true;
 			UseBlackboard(tree->BlackboardAsset, b);
 			Blackboard = b;
-			//BehaviorComp
+
 			BhTreeToRun = tree;
 			AttDamage = npc->AttackDamage;
 			AttRange = npc->AttackRange;
-				//RunBehaviorTree(tree);
+
 			BehaviorComp = Cast<UBehaviorTreeComponent>(BrainComponent);
 			RunBehaviorTree(BhTreeToRun);
-			UE_LOG(LogTemp,Warning,TEXT("the bh tree is now stored"));
-			if(BehaviorComp)
-			{
-				//UE_LOG(LogTemp,Warning,TEXT("have got BHComp"));	
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("BehaviorComp is null"));
-			}
+		
+		
 		}
 	}
 }

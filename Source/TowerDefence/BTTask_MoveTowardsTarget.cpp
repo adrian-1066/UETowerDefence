@@ -22,10 +22,6 @@ EBTNodeResult::Type UBTTask_MoveTowardsTarget::ExecuteTask(UBehaviorTreeComponen
 				FNavLocation Loc;
 				FVector AILoc = npc->GetActorLocation();
 				FVector PlayerLoc = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-				
-				
-				UE_LOG(LogTemp,Warning,TEXT("player loc has been found"));
-				
 				Loc.Location = PlayerLoc;
 				OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), Loc.Location);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -35,5 +31,4 @@ EBTNodeResult::Type UBTTask_MoveTowardsTarget::ExecuteTask(UBehaviorTreeComponen
 		}
 	}
 	return EBTNodeResult::Failed;
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
 }

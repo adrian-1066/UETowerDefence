@@ -3,10 +3,10 @@
 
 #include "TowerBaseScript.h"
 
-// Sets default values
+
 ATowerBaseScript::ATowerBaseScript()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	
 	PrimaryActorTick.bCanEverTick = true;
 	TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TowerMesh"));
 	
@@ -15,23 +15,16 @@ ATowerBaseScript::ATowerBaseScript()
 
 }
 
-// Called when the game starts or when spawned
+
 void ATowerBaseScript::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentHealth = MaxHealth;
-	//TowerMesh->OnComponentBeginOverlap.AddDynamic(this,&ATowerBaseScript::OnOverlapBegin);
-	//TowerMesh->SetStaticMesh(StaticTowerMesh);
+
 	
 }
 
-/*void ATowerBaseScript::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UE_LOG(LogTemp,Warning,TEXT("collision detected"));
-}*/
 
-// Called every frame
 void ATowerBaseScript::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -42,33 +35,26 @@ float ATowerBaseScript::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	AActor* DamageCauser)
 {
 
-	UE_LOG(LogTemp,Warning,TEXT("tower has taken damage"));
+	
 	CurrentHealth -= DamageAmount;
 	if(CurrentHealth <= 0.0f)
 	{
 		OnDeath();
 	}
 	return 0.0f;
-	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
 }
 
 void ATowerBaseScript::OnDeath()
 {
-	UE_LOG(LogTemp,Warning,TEXT("tower has dies using the base version of the function"));
+	
 }
 
-/*void ATowerBaseScript::TakeDamage(float damage)
-{
-	CurrentHealth -= damage;
-	if(CurrentHealth <= 0)
-	{
-		TowerDeath();
-	}
-}*/
+
 
 void ATowerBaseScript::TowerDeath()
 {
-	UE_LOG(LogTemp,Warning,TEXT("Tower has died"));
+
 }
 
 UStaticMesh* ATowerBaseScript::GetTowerStaticMesh()

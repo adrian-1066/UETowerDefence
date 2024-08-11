@@ -10,7 +10,7 @@
 // Sets default values
 ABaseCharacterScript::ABaseCharacterScript()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetupAttachment(RootComponent);
@@ -28,15 +28,19 @@ void ABaseCharacterScript::UpdateGold(int Value)
 	HUDInstance->UpdateGoldText(Gold);
 }
 
-// Called when the game starts or when spawned
+
 void ABaseCharacterScript::BeginPlay()
 {
 	Super::BeginPlay();
+	AudioPlayer = FindComponentByClass<UAwakeAudioPlayer>();
+	if(AudioPlayer)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("found audio"));
+	}
 	SpawnTransparentTower();
 
 	
 	
-	//UHUDScript* HudDisplay = CreateWidget<UHUDScript>(GetWorld(),UHUDScript::StaticClass());
 	
 }
 void ABaseCharacterScript::CharacterSetUp()
@@ -53,14 +57,11 @@ void ABaseCharacterScript::CharacterSetUp()
 	UpdateGold(500);
 
 }
-// Called every frame
+
 void ABaseCharacterScript::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FVector Loc = GetLineTraceLocation();
-	SpawnedTransparentTower->SetActorLocation(Loc);
-	//TransparentTower->SetActorLocation(Loc);
-	
 }
 
 
@@ -73,12 +74,12 @@ void ABaseCharacterScript::ReturnLocation(FVector Loc)
 
 void ABaseCharacterScript::MoveInDirection(const FInputActionValue& Value)
 {
-	//UE_LOG(LogTemp,Warning,TEXT("move action triggered"));
+
 	FVector2D MovementDirection = Value.Get<FVector2D>();
 	AddMovementInput(GetActorForwardVector(), MovementDirection.Y);
 	AddMovementInput(GetActorRightVector(), MovementDirection.X);
 	
-	//AddMovementInput(GetActorRightVector(),MovementDirection.X);
+	
 }
 
 void ABaseCharacterScript::Look(const FInputActionValue& Value)
@@ -90,8 +91,6 @@ void ABaseCharacterScript::Look(const FInputActionValue& Value)
 
 void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 {
-	
-	//UE_LOG(LogTemp,Warning,TEXT("Jump triggered"));
 	const bool Triggered = Value.Get<bool>();
 	if(Triggered)
 	{
@@ -101,7 +100,6 @@ void ABaseCharacterScript::TriggerJump(const FInputActionValue& Value)
 
 void ABaseCharacterScript::ScrollHotBar(const FInputActionValue& Value)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("scroll triggered in character Script, the value is %f"), Value.Get<float>());
 	CurrentHotBarSlotSelected = HUDInstance->ChangeSelected(Value.Get<float>());
 	TransTower->SetMesh(HUDInstance->GetHotBarMesh(CurrentHotBarSlotSelected));
 }
@@ -123,37 +121,18 @@ void ABaseCharacterScript::PlaceTower(const FInputActionValue& Value)
 			TSubclassOf<ATowerBaseScript> TowerType = HUDInstance->TowerTypeToSpawn(CurrentHotBarSlotSelected);
 			if(Gold < TowerType.GetDefaultObject()->GoldCost)
 			{
-				UE_LOG(LogTemp,Warning,TEXT("can not afford tower"));
 				return;
 			}
 
 			UpdateGold(-TowerType.GetDefaultObject()->GoldCost);
-			// Define the spawn parameters
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
-
-			// Define the spawn location and rotation
 			FVector SpawnLocation = TransTower->GetActorLocation();
 			FRotator SpawnRotation = TransTower->GetActorRotation();
-
-			// Choose the actor class to spawn
-			//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
-
-			// Spawn the actor
-			
 			AActor* SpawnedActor = World->SpawnActor<AActor>(TowerType, SpawnLocation, SpawnRotation, SpawnParams);
 			TowersThatHaveBeenPlaced.Add(SpawnedActor);
-			// Check if the actor was successfully spawned
-			if (SpawnedActor)
-			{
-				//UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
-			}
 		}
-	}
-	else
-	{
-		//UE_LOG(LogTemp,Warning,TEXT("tower can not be placed here"));
 	}
 }
 
@@ -168,8 +147,6 @@ FVector ABaseCharacterScript::GetLineTraceLocation()
 		FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
 		TraceParams.bTraceComplex = true;
 		TraceParams.bReturnPhysicalMaterial = false;
-
-		// Perform the line trace
 		FHitResult HitResult;
 		bool bHit = GetWorld()->LineTraceSingleByChannel(
 			HitResult,
@@ -179,7 +156,7 @@ FVector ABaseCharacterScript::GetLineTraceLocation()
 			TraceParams
 		);
 		// Draw debug line
-		DrawDebugLine(
+		/*DrawDebugLine(
 			GetWorld(),
 			StartLocation,
 			EndLocation,
@@ -188,20 +165,19 @@ FVector ABaseCharacterScript::GetLineTraceLocation()
 			1.0f,
 			0,
 			1.0f
-		);
+		);*/
 		if (bHit)
 		{
-			// Output debug information
-			//UE_LOG(LogTemp,Warning,TEXT("the location that was hit %f %f %f"), HitResult.Location.X, HitResult.Location.Y, HitResult.Location.Z)
+			SpawnedTransparentTower->SetActorLocation(HitResult.Location);
+			TransTower->CanBePlaced = true;
 			return HitResult.Location;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
 		}
-
-		
-
 		
 	}
-	
+
+	TransTower->CanBePlaced = false;
+	SpawnedTransparentTower->SetActorLocation(FVector(-1000.0f,-1000.0f,10000.0f));
 	FVector temp = FVector::Zero();
 	return temp;
 }
@@ -211,33 +187,17 @@ void ABaseCharacterScript::SpawnTransparentTower()
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		// Define the spawn parameters
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = GetInstigator();
-
-		// Define the spawn location and rotation
 		FVector SpawnLocation = FVector(0.0f, 0.0f, 100.0f);
 		FRotator SpawnRotation = FRotator::ZeroRotator;
-
-		// Choose the actor class to spawn
-		//TSubclassOf<AActor> ActorToSpawn = AActor::StaticClass();
-
-		// Spawn the actor
 		AActor* SpawnedActor = World->SpawnActor<AActor>(TransTowerClass, SpawnLocation, SpawnRotation, SpawnParams);
-
-		// Check if the actor was successfully spawned
 		if (SpawnedActor)
 		{
 			TransTower = Cast<ABuildDisplayTowerScript>(SpawnedActor);
 			TransTower->CanBePlaced = true;
-			if(TransTower)
-			{
-				UE_LOG(LogTemp,Warning,TEXT("display tower is of type display"))
-			}
 			SpawnedTransparentTower = SpawnedActor;
-			UE_LOG(LogTemp,Warning,TEXT("the test actor was spawned"));
-			// Do something with the spawned actor (optional)
 		}
 	}
 }
@@ -247,7 +207,6 @@ void ABaseCharacterScript::StartNextRound()
 	UGameManagerComp* GameManager = Cast<UGameManagerComp>(GameManagerActor->GetComponentByClass(UGameManagerComp::StaticClass()));
 	if(GameManager)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("have gotten game manager in player class"));
 		if(GameManager->RoundStarted)
 		{
 			return;
@@ -257,7 +216,6 @@ void ABaseCharacterScript::StartNextRound()
 }
 
 
-// Called to bind functionality to input
 void ABaseCharacterScript::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

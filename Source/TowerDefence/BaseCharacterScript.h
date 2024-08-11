@@ -11,6 +11,7 @@
 #include "Engine/World.h"
 #include "GameFramework/Actor.h" 
 #include "UObject/ConstructorHelpers.h"
+#include "AwakeAudioPlayer.h"
 #include "Blueprint/UserWidget.h"
 #include "HUDScript.h"
 #include "BuildDisplayTowerScript.h"
@@ -62,6 +63,8 @@ public:
 	void ReturnLocation(FVector Loc);
 	UPROPERTY()
 	UHUDScript* HUDInstance;
+	UPROPERTY()
+	UAwakeAudioPlayer* AudioPlayer;
 	void CharacterSetUp();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Stats")
 	int Gold;

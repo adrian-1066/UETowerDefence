@@ -16,7 +16,7 @@ float ATowerToDefendScript::TakeDamage(float DamageAmount, FDamageEvent const& D
 		OnDeath();
 	}
 	return 0.0f;
-	//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
 }
 
 void ATowerToDefendScript::OnDeath()
@@ -24,12 +24,9 @@ void ATowerToDefendScript::OnDeath()
 	UGameManagerComp* GameMan = Cast<UGameManagerComp>(GameManager->GetComponentByClass(UGameManagerComp::StaticClass()));
 	if(GameMan)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("game is over"));
+
 		GameMan->LoseGame();
 	}
-	else
-	{
-		UE_LOG(LogTemp,Warning,TEXT("failed to get GameManager"));
-	}
+
 	Super::OnDeath();
 }

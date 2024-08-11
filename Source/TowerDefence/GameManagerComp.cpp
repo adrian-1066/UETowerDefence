@@ -3,18 +3,18 @@
 
 #include "GameManagerComp.h"
 
-// Sets default values for this component's properties
+
 UGameManagerComp::UGameManagerComp()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
-// Called when the game starts
+
 void UGameManagerComp::BeginPlay()
 {
 	Super::BeginPlay();
 	SetPlayerCharacter();
 	StartSetUp();
-	//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,2.0f,true);
+	
 }
 
 TArray<AActor*> UGameManagerComp::GetAllTowers()
@@ -40,20 +40,14 @@ void UGameManagerComp::NextRoundStart()
 	RoundStarted = true;
 	if(CurrentNPCSpawned >= CurrentRoundSize)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("round Spawning STOPPED"));
 		return;
 	}
-	UE_LOG(LogTemp,Warning,TEXT("Spawning num %d npc"), CurrentNPCSpawned);
 	ListOfEnemies[CurrentNPCSpawned]->MaxHealth = 150 + (CurrentRound * 60);
 	ListOfEnemies[CurrentNPCSpawned]->BaseMoveSpeed += 45;
 	ListOfEnemies[CurrentNPCSpawned]->StartAttacking(SpawnLocations[0]->GetActorLocation());
 	CurrentNPCSpawned++;
 	GetWorld()->GetTimerManager().SetTimer(RoundTimer,this,&UGameManagerComp::NextRoundStart,1.0f,false);
-	/*
-	for(int i = 0; i < TotalNumOfEnemies; i++)
-	{
-		ListOfEnemies[i]->StartAttacking();
-	}*/
+	
 }
 
 void UGameManagerComp::EndRound()
@@ -72,7 +66,6 @@ void UGameManagerComp::EndRound()
 	{
 		WinGame();
 	}
-	//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::NextRoundStart,2.0f,true);
 	
 }
 
@@ -80,7 +73,7 @@ void UGameManagerComp::LoseGame()
 {
 	if(GetWorld())
 	{
-		UE_LOG(LogTemp,Warning,TEXT("you have lost the game"));
+		
 		UGameplayStatics::OpenLevel(GetWorld(),"LoseGameLevel");
 	}
 	
@@ -88,7 +81,6 @@ void UGameManagerComp::LoseGame()
 
 void UGameManagerComp::WinGame()
 {
-	UE_LOG(LogTemp,Warning,TEXT("you have won the game"));
 	UGameplayStatics::OpenLevel(GetWorld(),"WinGameLevel");
 }
 
@@ -121,7 +113,6 @@ void UGameManagerComp::SpawnEnemies()
 				ABaseEnemyScript* SpawnedEnemy = Cast<ABaseEnemyScript>(SpawnedActor);
 				if(SpawnedEnemy)
 				{
-					UE_LOG(LogTemp,Warning,TEXT("correct Enemy Has Spawned"));
 					ANPCAIController* AIConToCon = GetWorld()->SpawnActor<ANPCAIController>(ANPCAIController::StaticClass());
 					AIConToCon->TowerToAttack = DefencePointRef;
 					AIConToCon->SetGameManager(this);
@@ -129,17 +120,14 @@ void UGameManagerComp::SpawnEnemies()
 					SpawnedEnemy->NPCID = i;
 					ListOfEnemies.Add(SpawnedEnemy);
 					SpawnedEnemy->StopAttacking();
-					//SpawnedEnemy->StartAttacking();
+					
 					
 				}
 				else
 				{
-					UE_LOG(LogTemp,Warning,TEXT("spawn failed"));
 				}
 			}
 		}
-		//EndRound();
-		//GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UGameManagerComp::EndRound,5.0f,true);
 	}
 }
 
@@ -152,16 +140,13 @@ void UGameManagerComp::SetPlayerCharacter()
 		PlayerCharacter = ABCS;
 		ABCS->CharacterSetUp();
 		ABCS->GameManagerActor = GetOwner();
-		UE_LOG(LogTemp,Warning,TEXT("player character ref has been set"));
+		
 	}
-	else
-	{
-		UE_LOG(LogTemp,Warning,TEXT("player character ref has failed"));
-	}
+
 }
 
 
-// Called every frame
+
 void UGameManagerComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

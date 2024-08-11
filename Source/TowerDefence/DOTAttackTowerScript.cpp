@@ -10,7 +10,7 @@ void ADOTAttackTowerScript::Attack(AActor* Target)
 	ABaseEnemyScript* NPC = Cast<ABaseEnemyScript>(Target);
 	if(NPC)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("DOT Tower is targeting npc"));
+	
 		NPC->StartFireDamage(DamagePerTick);
 	}
 }
